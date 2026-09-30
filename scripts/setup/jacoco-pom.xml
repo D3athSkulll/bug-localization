@@ -1,0 +1,13 @@
+<!-- Downloads the JaCoCo 0.8.12 + ASM jars used by the coverage runner:
+     mvn -f scripts/setup/jacoco-pom.xml dependency:copy-dependencies -DoutputDirectory=tools/jacoco -->
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>isbl</groupId>
+  <artifactId>jacoco-deps</artifactId>
+  <version>1</version>
+  <dependencies>
+    <dependency><groupId>org.jacoco</groupId><artifactId>org.jacoco.core</artifactId><version>0.8.12</version></dependency>
+    <dependency><groupId>org.jacoco</groupId><artifactId>org.jacoco.agent</artifactId><version>0.8.12</version><classifier>runtime</classifier></dependency>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version></dependency>
+  </dependencies>
+</project>

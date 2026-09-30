@@ -1,0 +1,18 @@
+# upstream clones, tools and environments are recreated by the setup steps in README.md
+envs/
+tools/
+work-*/
+defects4j/
+buglocalization/
+# generated / machine-specific data (the bug report is kept)
+data/*
+!data/bug_reports/
+*.class
+*.jar
+__pycache__/
+*.pyc
+.pytest_cache/
+*.log
+*.excluded
+.idea/
+.vscode/
