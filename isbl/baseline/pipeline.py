@@ -10,7 +10,8 @@ import re
 import subprocess
 import sys
 
-from isbl.baseline import ir, spectrum, sfl, ranking
+from isbl.baseline import ir, ir_models, spectrum, sfl, ranking
+from isbl.baseline.answer_key import answer_key_from_patch
 from isbl.baseline.timing import StageTimer
 from isbl.evaluation import metrics, diagnostics
 
@@ -31,6 +32,13 @@ def load_bug_report(path):
     with open(path, encoding="utf-8") as f:
         d = json.load(f)["fields"]
     return (d.get("summary") or "") + "\n" + (d.get("description") or "")
+
+
+def load_bug_report_fields(path):
+    """{'summary': ..., 'description': ...} of the bug report (used by structured retrieval)."""
+    with open(path, encoding="utf-8") as f:
+        d = json.load(f)["fields"]
+    return {"summary": d.get("summary") or "", "description": d.get("description") or ""}
 
 
 def buggy_statements(repo, buggy, fixed, src_prefix):
@@ -80,7 +88,7 @@ def _result_row(cfg, method, formula, tests_used, spec, suspicious, files, ranke
         row = {
             "project": cfg["project"], "bug_id": cfg["bug_id"], "defects4j_version": cfg["defects4j_version"],
             "source_commit": cfg["buggy_commit"], "method": method,
-            "ir_implementation": ("none" if suspicious is None else "vsm-%s-cosine" % cfg.get("ir_mode", "tf")),
+            "ir_implementation": ("none" if suspicious is None else (cfg.get("ir_model") or "vsm-%s-cosine" % cfg.get("ir_mode", "tf"))),
             "ir_parameters": cfg.get("ir_options", {}), "test_scope": cfg.get("test_scope", "relevant"),
             "k": None if suspicious is None else cfg["k"], "sfl_formula": formula,
             "sfl_parameters": {"star": 2} if formula == "dstar" else {}, "tie_handling": tie_cfg,
@@ -120,7 +128,12 @@ def run(cfg, recollect=False, trace=None, timer=None):
 
     # Step A: IR file ranking + top-k
     with timer("03 ir_rank_files (tokenise+cosine)"):
-        ranked = ir.rank_files(query, files, mode=cfg.get("ir_mode", "tf"), **cfg.get("ir_options", {}))
+        if cfg.get("ir_model"):       # any model of isbl/baseline/ir_models.py (bm25, rvsm, tfidf_sublinear, ...)
+            ranked = ir_models.rank(cfg["ir_model"], query, files, prep=cfg.get("ir_options", {}),
+                                    query_fields=load_bug_report_fields(P(cfg["bug_report"])),
+                                    name_match_weight=cfg.get("ir_name_match_weight", 0.0), **cfg.get("ir_params", {}))
+        else:
+            ranked = ir.rank_files(query, files, mode=cfg.get("ir_mode", "tf"), **cfg.get("ir_options", {}))
     with timer("04 ir_select_top_k"):
         suspicious = ir.select_top_k(ranked, cfg["k"])
 
@@ -154,8 +167,12 @@ def run(cfg, recollect=False, trace=None, timer=None):
         reduced = spectrum.build_spectrum(reduced_tests)
 
     # evaluation answer key (never used by the localisation)
-    with timer("11 answer_key (git diff)"):
-        bug_stmts = buggy_statements(repo, cfg["buggy_commit"], cfg["fixed_commit"], cfg["src_dir"])
+    with timer("11 answer_key"):
+        if cfg.get("answer_key_patch"):      # Defects4J src patch (fixed -> buggy): '+' lines are buggy
+            with open(P(cfg["answer_key_patch"]), encoding="utf-8", errors="replace") as fh:
+                bug_stmts = answer_key_from_patch(fh.read())
+        else:
+            bug_stmts = buggy_statements(repo, cfg["buggy_commit"], cfg["fixed_commit"], cfg["src_dir"])
         bug_files = sorted({f for f, _ in bug_stmts})
 
     if trace is not None:
@@ -237,14 +254,14 @@ def main(argv):
     cfg_path = argv[1]
     with open(cfg_path) as f:
         cfg = json.load(f)
-    cfg["_root"] = os.path.dirname(os.path.dirname(os.path.abspath(cfg_path)))
+    cfg["_root"] = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     trace = {}
     timer = StageTimer()
     res = run(cfg, recollect="--recollect" in argv, trace=trace, timer=timer)
     out_dir = os.path.join(cfg["_root"], "results", "raw")
     os.makedirs(out_dir, exist_ok=True)
-    tag = "%s-%s_%s_%s_k%g" % (cfg["project"], cfg["bug_id"], cfg.get("ir_mode", "tf"),
-                               cfg.get("test_scope", "relevant"), cfg["k"])
+    ir_name = cfg.get("ir_model") or cfg.get("ir_mode", "tf")
+    tag = "%s-%s_%s_%s_k%g" % (cfg["project"], cfg["bug_id"], ir_name, cfg.get("test_scope", "relevant"), cfg["k"])
     with open(os.path.join(out_dir, tag + ".json"), "w") as f:
         json.dump(res, f, indent=2)
     with open(os.path.join(out_dir, tag + ".csv"), "w", newline="") as f:
@@ -263,7 +280,7 @@ def main(argv):
                 w.writerow(["jvm:" + k, "%.3f" % (rs[k] / 1000.0), ""])
     print("non-trigger failing tests removed from spectrum: %d" % res[0]["removed_non_trigger_failures"])
     print("IR=%s scope=%s k=%g tie=%s  buggy file IR rank=%s/%d" % (
-        cfg.get("ir_mode", "tf"), cfg.get("test_scope", "relevant"), cfg["k"], cfg.get("tie", "worst"),
+        ir_name, cfg.get("test_scope", "relevant"), cfg["k"], cfg.get("tie", "worst"),
         res[0]["buggy_file_ir_rank"], res[0]["num_files"]))
     print("%-12s %7s %6s %9s  %-18s %s" % ("method", "tests", "stmts", "rank", "worst/avg/best", "TOP@1/3/5  MRR"))
     for r in res:

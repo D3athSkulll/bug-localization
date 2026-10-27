@@ -1,7 +1,9 @@
-# Python 3.12.4 (venv envs/modern312) - resolved and imported 2026-09-30
+# Python 3.12.4 (venv envs/modern312) - resolved and tested 2026-10-25
 numpy==2.5.3
 scikit-learn==1.9.1
 scipy==1.18.1
 joblib==1.6.0
 threadpoolctl==3.7.0
-rank-bm25==0.2.2
+snowballstemmer==3.1.1
+pandas==3.0.6
+openpyxl==3.1.5

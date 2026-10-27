@@ -17,11 +17,13 @@ public class CoverageRunner {
     static File classesDir;
     static PrintWriter out;
     static Set<String> failed = new HashSet<String>();
+    static Map<Long, byte[]> classBytes = new HashMap<Long, byte[]>();
     static long testNs = 0, dumpNs = 0, analyzeNs = 0, startNs; static int nTests = 0;
 
     public static void main(String[] a) throws Exception {
         classesDir = new File(a[0]);
         out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(a[1]), "UTF-8"));
+        indexClasses(classesDir);
         final IAgent agent = RT.getAgent();
         startNs = System.nanoTime();
         JUnitCore core = new JUnitCore();
@@ -49,6 +51,18 @@ public class CoverageRunner {
         System.exit(0);
     }
 
+    static void indexClasses(File dir) throws IOException {
+        File[] fs = dir.listFiles();
+        if (fs == null) return;
+        for (File f : fs) {
+            if (f.isDirectory()) indexClasses(f);
+            else if (f.getName().endsWith(".class")) {
+                byte[] b = java.nio.file.Files.readAllBytes(f.toPath());
+                classBytes.put(org.jacoco.core.internal.data.CRC64.classId(b), b);
+            }
+        }
+    }
+
     static void dump(String test, byte[] data) throws Exception {
         ExecutionDataStore store = new ExecutionDataStore();
         SessionInfoStore si = new SessionInfoStore();
@@ -57,7 +71,14 @@ public class CoverageRunner {
         r.setSessionInfoVisitor(si);
         r.read();
         CoverageBuilder cb = new CoverageBuilder();
-        new Analyzer(store, cb).analyzeAll(classesDir);
+        Analyzer an = new Analyzer(store, cb);
+        // analyse only classes with at least one executed probe (the full analyzeAll per test dominated run time)
+        for (ExecutionData ed : store.getContents()) {
+            boolean hit = false;
+            for (boolean b : ed.getProbes()) { if (b) { hit = true; break; } }
+            byte[] bytes = classBytes.get(ed.getId());
+            if (hit && bytes != null) an.analyzeClass(bytes, ed.getName());
+        }
         out.println("T\t" + test + "\t" + (failed.contains(test) ? "FAIL" : "PASS"));
         for (IClassCoverage cc : cb.getClasses()) {
             if (cc.getName().contains("$") ) { /* inner classes are merged by source file below */ }

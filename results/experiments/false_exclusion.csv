@@ -1,0 +1,70 @@
+ir_config,k,bugs,buggy_file_excluded,which_bugs,mean_statements_removed
+tf_cosine | paper,0.1,3,2,"Lang-2,Lang-3",0.6193803388100368
+tf_cosine | paper,0.25,3,0,,0.18987177898630325
+tf_cosine | paper,0.5,3,0,,0.04693951854038444
+tfidf_authors | none,0.1,3,0,,0.4170072369227096
+tfidf_authors | none,0.25,3,0,,0.3081136069487786
+tfidf_authors | none,0.5,3,0,,0.10957320863516103
+tfidf_smooth | paper,0.1,3,0,,0.3190798824238676
+tfidf_smooth | paper,0.25,3,0,,0.22121500195925514
+tfidf_smooth | paper,0.5,3,0,,0.0911732172426946
+tfidf_sublinear | paper,0.1,3,0,,0.46884514525092813
+tfidf_sublinear | paper,0.25,3,0,,0.23666294672505372
+tfidf_sublinear | paper,0.5,3,0,,0.13909828870271093
+tfidf_sublinear | split+stem,0.1,3,0,,0.45931160762750284
+tfidf_sublinear | split+stem,0.25,3,0,,0.2727486430519623
+tfidf_sublinear | split+stem,0.5,3,0,,0.1510393076211033
+bm25 | paper,0.1,3,0,,0.4565877397350957
+bm25 | paper,0.25,3,0,,0.204722749647242
+bm25 | paper,0.5,3,0,,0.0713420748790814
+bm25 | split+stem,0.1,3,1,Lang-2,0.47733922607646967
+bm25 | split+stem,0.25,3,0,,0.2897103433452779
+bm25 | split+stem,0.5,3,0,,0.10913574188623154
+rvsm | paper,0.1,3,0,,0.43554579085065637
+rvsm | paper,0.25,3,0,,0.27003032840704216
+rvsm | paper,0.5,3,0,,0.14761037586648348
+rvsm | split+stem,0.1,3,0,,0.2822627443091828
+rvsm | split+stem,0.25,3,0,,0.27003032840704216
+rvsm | split+stem,0.5,3,0,,0.17751183696060513
+lm_dirichlet | split+stem,0.1,3,1,Lang-2,0.7102764676919403
+lm_dirichlet | split+stem,0.25,3,1,Lang-2,0.6881623949645288
+lm_dirichlet | split+stem,0.5,3,0,,0.5138151448325657
+lsi | split+stem,0.1,3,0,,0.5240034700721744
+lsi | split+stem,0.25,3,0,,0.2713894857295022
+lsi | split+stem,0.5,3,0,,0.12444133462585168
+jaccard | paper,0.1,3,0,,0.5001057636675099
+jaccard | paper,0.25,3,0,,0.36211430660456534
+jaccard | paper,0.5,3,0,,0.3076820688922534
+containment | paper,0.1,3,0,,0.432581518068839
+containment | paper,0.25,3,0,,0.14281584081733548
+containment | paper,0.5,3,0,,0.08496141434111748
+bluir_like | split+stem,0.1,3,0,,0.32237732168795974
+bluir_like | split+stem,0.25,3,0,,0.2074915391068365
+bluir_like | split+stem,0.5,3,0,,0.09114198022557989
+"rrf(bm25,tfidf,rvsm) | split+stem",0.1,3,0,,0.3155620987094547
+"rrf(bm25,tfidf,rvsm) | split+stem",0.25,3,0,,0.27003032840704216
+"rrf(bm25,tfidf,rvsm) | split+stem",0.5,3,0,,0.17751183696060513
+tfidf_sublinear | split+stem +name,0.1,3,0,,0.45931160762750284
+tfidf_sublinear | split+stem +name,0.25,3,0,,0.2727486430519623
+tfidf_sublinear | split+stem +name,0.5,3,0,,0.1510393076211033
+bm25 | split+stem +name,0.1,3,0,,0.466121277358521
+bm25 | split+stem +name,0.25,3,0,,0.2897103433452779
+bm25 | split+stem +name,0.5,3,0,,0.10913574188623154
+tf_cosine | paper +clean,0.1,3,1,Lang-3,0.4671367490664471
+tf_cosine | paper +clean,0.25,3,0,,0.18987177898630325
+tf_cosine | paper +clean,0.5,3,0,,0.04693951854038444
+tfidf_sublinear | split+stem +clean,0.1,3,0,,0.45931160762750284
+tfidf_sublinear | split+stem +clean,0.25,3,0,,0.2727486430519623
+tfidf_sublinear | split+stem +clean,0.5,3,0,,0.1510393076211033
+bm25 | split+stem +clean,0.1,3,0,,0.466121277358521
+bm25 | split+stem +clean,0.25,3,0,,0.2897103433452779
+bm25 | split+stem +clean,0.5,3,0,,0.10913574188623154
+rvsm | split+stem +clean,0.1,3,0,,0.2822627443091828
+rvsm | split+stem +clean,0.25,3,0,,0.27003032840704216
+rvsm | split+stem +clean,0.5,3,0,,0.17751183696060513
+bluir_like | split+stem +clean,0.1,3,0,,0.46340296271360076
+bluir_like | split+stem +clean,0.25,3,0,,0.2074915391068365
+bluir_like | split+stem +clean,0.5,3,0,,0.09114198022557989
+lm_dirichlet | split+stem +clean,0.1,3,0,,0.5580328779483507
+lm_dirichlet | split+stem +clean,0.25,3,0,,0.535918805220939
+lm_dirichlet | split+stem +clean,0.5,3,0,,0.5138151448325657

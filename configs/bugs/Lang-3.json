@@ -1,0 +1,35 @@
+{
+  "project": "Lang",
+  "bug_id": 3,
+  "defects4j_version": "1.4.0",
+  "repo": "work/Lang-3",
+  "src_dir": "src/main/java",
+  "classes_dir": "target/classes",
+  "test_classes_dir": "target/test-classes",
+  "classpath_file": "data/bugs/Lang-3/cp.txt",
+  "coverage_file": "data/coverage/Lang-3.tsv",
+  "java_home": "tools/jdk8u504-b01",
+  "buggy_commit": "8a1042959df80c06dbfa83896594caa8e20ff9d6+src.patch (reverse)",
+  "fixed_commit": "8a1042959df80c06dbfa83896594caa8e20ff9d6",
+  "bug_report": "data/bug_reports/Lang-3.json",
+  "test_classes": [
+    "org.apache.commons.lang3.BooleanUtilsTest",
+    "org.apache.commons.lang3.math.NumberUtilsTest",
+    "org.apache.commons.lang3.reflect.ConstructorUtilsTest",
+    "org.apache.commons.lang3.reflect.MethodUtilsTest"
+  ],
+  "k": 0.5,
+  "sfl": [
+    "ochiai",
+    "dstar"
+  ],
+  "tie": "worst",
+  "ir_mode": "tf",
+  "ir_options": {
+    "remove_keywords": true,
+    "remove_stopwords": true
+  },
+  "test_scope": "relevant",
+  "trigger_tests_file": "defects4j/framework/projects/Lang/trigger_tests/3",
+  "answer_key_patch": "data/bugs/Lang-3/src.patch"
+}

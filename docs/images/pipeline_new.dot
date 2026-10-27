@@ -1,0 +1,52 @@
+digraph improved {
+  graph [rankdir=TB, fontname="Arial", labelloc=t, fontsize=20, pad=0.35, nodesep=0.45, ranksep=0.42,
+         label="NEW PIPELINE - after faculty review: better IR step, more formulas, hybrid tie-breaking, more metrics\n "];
+  node  [shape=box, style="rounded,filled", fontname="Arial", fontsize=12, fillcolor="#F2F2F2", color="#595959", margin="0.20,0.11"];
+  edge  [color="#404040", arrowsize=0.8, fontname="Arial", fontsize=10];
+
+  subgraph cluster_in {
+    label="INPUT: Defects4J Lang-1, Lang-2, Lang-3"; fontname="Arial"; fontsize=13; style="rounded,filled"; fillcolor="#EAF1FB"; color="#9DB7DD";
+    rep  [label="Bug report text\n(Jira summary + description)", fillcolor="#DDEBF7"];
+    src  [label="Buggy source code\n(108 .java files)\nbuilt from the Defects4J patch", fillcolor="#DDEBF7"];
+    tst  [label="Project tests\n(Defects4J relevant tests;\ntrigger test must fail)", fillcolor="#DDEBF7"];
+  }
+
+  subgraph cluster_A {
+    label="STEP A - which FILES look related to the report?"; fontname="Arial"; fontsize=13; style="rounded,filled"; fillcolor="#FFF8E5"; color="#E6C86E";
+    N1 [label="NEW  Clean the query\nstrip pasted stack-trace lines\n(Lang-2: 49 frames of an unrelated project)", fillcolor="#C6E0B4", color="#548235"];
+    A1 [label="A1  Preprocess (options)\nkeywords / stop words, licence header off,\nsplit identifiers, stemming", fillcolor="#FFF2CC", color="#BF9000"];
+    A2 [label="A2  IR model zoo (12 models)\nTF-IDF (3 variants), BM25, rVSM, language model, LSI, BLUiR-like,\nJaccard, containment, rank fusion, raw-TF (paper)", fillcolor="#C6E0B4", color="#548235"];
+    A3 [label="A3  Rank all files\nfile score F   (+ optional class-name bonus)", fillcolor="#FFF2CC", color="#BF9000"];
+    A4 [label="A4  Keep the top k% files\nTF-IDF / rVSM keep the buggy file even at k = 10%\n(raw-TF loses it on 2 of 3 bugs)", fillcolor="#FFF2CC", color="#BF9000"];
+  }
+
+  subgraph cluster_B {
+    label="STEP B - which LINES do the tests point at?"; fontname="Arial"; fontsize=13; style="rounded,filled"; fillcolor="#EEF6EA"; color="#9CC48A";
+    B1 [label="B1  Run the tests with coverage\n8x faster runner: analyse only executed classes", fillcolor="#FFF2CC", color="#BF9000"];
+    B2 [label="B2  Spectrum counts per line\nef  ep  nf  np"];
+    B3 [label="B3  Reduce the spectrum (paper II-B)\ndrop lines of the dropped files,\nthen tests that cover nothing left"];
+  }
+
+  C1 [label="STEP C  Score every line\n11 formulas: Ochiai, DStar, Tarantula, Jaccard, Op2,\nBarinel, Kulczynski2, Wong2, Ochiai2, Dice, DStar3", fillcolor="#FFF2CC", color="#BF9000"];
+  H  [label="NEW  Hybrid tie-break with the bug report\nsort key = ( SFL score , file score F , statement text score T )\nlater keys only reorder EXACT ties", fillcolor="#C6E0B4", color="#548235", penwidth=1.6];
+  C2 [label="Rank the lines\nties reported three ways: worst / average / best", fillcolor="#FFF2CC", color="#BF9000"];
+  D  [label="STEP D  Compare with the real buggy lines\nanswer key read from the Defects4J patch", fillcolor="#FFF2CC", color="#BF9000"];
+  OUT [label="OUTPUT - NEW metric suite\nTop@N, MRR, MAP, nDCG, recall@k, EXAM, wasted effort,\nwin/draw/lose, false-exclusion check, per-stage timing,\nCSV files + Excel workbook + cosine audit", fillcolor="#C6E0B4", color="#548235", penwidth=1.6];
+
+  subgraph cluster_legend {
+    label="legend"; fontname="Arial"; fontsize=12; style="rounded"; color="#999999";
+    l1 [label="as in the paper", fillcolor="#F2F2F2", fontsize=11];
+    l2 [label="improved", fillcolor="#FFF2CC", color="#BF9000", fontsize=11];
+    l3 [label="new step", fillcolor="#C6E0B4", color="#548235", fontsize=11];
+    l1 -> l2 -> l3 [style=invis];
+  }
+
+  rep -> N1 -> A1; src -> A1;
+  A1 -> A2 -> A3 -> A4;
+  tst -> B1 -> B2;
+  A4 -> B3 [label=" top-k files"];
+  B2 -> B3;
+  B3 -> C1 -> H -> C2 -> D -> OUT;
+  A3 -> H [style=dashed, color="#548235", constraint=false, label=" file score F"];
+  OUT -> l1 [style=invis];
+}

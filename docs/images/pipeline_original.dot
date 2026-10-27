@@ -1,0 +1,40 @@
+digraph original {
+  graph [rankdir=TB, fontname="Arial", labelloc=t, fontsize=20, pad=0.35, nodesep=0.45, ranksep=0.42,
+         label="ORIGINAL PIPELINE - the ISBL paper's baseline as first rebuilt and run on Lang-1\n "];
+  node  [shape=box, style="rounded,filled", fontname="Arial", fontsize=12, fillcolor="#F2F2F2", color="#595959", margin="0.20,0.11"];
+  edge  [color="#404040", arrowsize=0.8, fontname="Arial", fontsize=10];
+
+  subgraph cluster_in {
+    label="INPUT: one Defects4J bug"; fontname="Arial"; fontsize=13; style="rounded,filled"; fillcolor="#EAF1FB"; color="#9DB7DD";
+    rep  [label="Bug report text\n(Jira summary + description)", fillcolor="#DDEBF7"];
+    src  [label="Buggy source code\n(108 .java files)", fillcolor="#DDEBF7"];
+    tst  [label="Project tests\n(Defects4J relevant tests;\n1 failing trigger test)", fillcolor="#DDEBF7"];
+  }
+
+  subgraph cluster_A {
+    label="STEP A - which FILES look related to the report?  (information retrieval)"; fontname="Arial"; fontsize=13; style="rounded,filled"; fillcolor="#FFF8E5"; color="#E6C86E";
+    A1 [label="A1  Preprocess\nlowercase words;\ndrop Java keywords and stop words"];
+    A2 [label="A2  Raw term-frequency vectors\n(word counts) of the report\nand of every file"];
+    A3 [label="A3  Cosine similarity\nrank all 108 files"];
+    A4 [label="A4  Keep the top k% files\n(k = 50%  ->  54 files)"];
+  }
+
+  subgraph cluster_B {
+    label="STEP B - which LINES do the tests point at?  (spectrum)"; fontname="Arial"; fontsize=13; style="rounded,filled"; fillcolor="#EEF6EA"; color="#9CC48A";
+    B1 [label="B1  Run the tests with coverage\n(JaCoCo: lines run by each test, pass/fail)"];
+    B2 [label="B2  Spectrum counts per line\nef  ep  nf  np"];
+    B3 [label="B3  Reduce the spectrum (paper II-B)\ndrop lines of the dropped files,\nthen tests that cover nothing left"];
+  }
+
+  C1 [label="STEP C  Score every line\nOchiai   |   DStar", fillcolor="#FBE5D6"];
+  C2 [label="Rank the lines\ntied lines take the WORST position", fillcolor="#FBE5D6"];
+  D  [label="STEP D  Compare with the real buggy lines\n(answer key = what the developers' fix changed)", fillcolor="#E4DFEC"];
+  OUT [label="OUTPUT\nTOP@1 / TOP@3 / TOP@5  and  MRR\n(Lang-1: buggy line at rank 6  ->  TOP@N = 0, MRR = 0.167)", fillcolor="#D9D9D9", penwidth=1.6];
+
+  rep -> A1; src -> A1;
+  A1 -> A2 -> A3 -> A4;
+  tst -> B1 -> B2;
+  A4 -> B3 [label=" top-k files"];
+  B2 -> B3;
+  B3 -> C1 -> C2 -> D -> OUT;
+}

@@ -1,0 +1,32 @@
+{
+  "project": "Lang",
+  "bug_id": 2,
+  "defects4j_version": "1.4.0",
+  "repo": "work/Lang-2",
+  "src_dir": "src/main/java",
+  "classes_dir": "target/classes",
+  "test_classes_dir": "target/test-classes",
+  "classpath_file": "data/bugs/Lang-2/cp.txt",
+  "coverage_file": "data/coverage/Lang-2.tsv",
+  "java_home": "tools/jdk8u504-b01",
+  "buggy_commit": "dcde57852a97a9ac8021d2440b3de5be4870ecf6+src.patch (reverse)",
+  "fixed_commit": "dcde57852a97a9ac8021d2440b3de5be4870ecf6",
+  "bug_report": "data/bug_reports/Lang-2.json",
+  "test_classes": [
+    "org.apache.commons.lang3.LocaleUtilsTest"
+  ],
+  "k": 0.5,
+  "sfl": [
+    "ochiai",
+    "dstar"
+  ],
+  "tie": "worst",
+  "ir_mode": "tf",
+  "ir_options": {
+    "remove_keywords": true,
+    "remove_stopwords": true
+  },
+  "test_scope": "relevant",
+  "trigger_tests_file": "defects4j/framework/projects/Lang/trigger_tests/2",
+  "answer_key_patch": "data/bugs/Lang-2/src.patch"
+}

@@ -15,7 +15,7 @@ Write-Host "`n== Checkout + compile + run tests (expect 1 error: TestLang747) ==
 & "C:\Program Files\Git\bin\bash.exe" scripts/run/smoke_lang1.sh
 Write-Host "`n== Defects4J's recorded trigger failure for Lang-1 ==" -ForegroundColor Cyan
 Get-Content defects4j\framework\projects\Lang\trigger_tests\1 -TotalCount 2
-Write-Host "`n== Unit tests (63) ==" -ForegroundColor Cyan
+Write-Host "`n== Unit tests (104) ==" -ForegroundColor Cyan
 python -m pytest -q tests
 Write-Host "`n== ISBL baseline on Lang-1: IR -> top-k -> spectrum -> Ochiai/DStar -> metrics ==" -ForegroundColor Cyan
 python -m isbl.baseline.pipeline configs\lang1_k50.json --recollect --explain

@@ -30,5 +30,6 @@
     "remove_stopwords": true
   },
   "test_scope": "relevant",
-  "trigger_tests_file": "defects4j/framework/projects/Lang/trigger_tests/1"
+  "trigger_tests_file": "defects4j/framework/projects/Lang/trigger_tests/1",
+  "answer_key_patch": "defects4j/framework/projects/Lang/patches/1.src.patch"
 }

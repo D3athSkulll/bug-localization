@@ -1,1 +1,4 @@
 pytest==9.1.1
+# the legacy Python 3.7 environment uses pytest==7.4.4
+# optional: independent check of the Excel formulas (no LibreOffice/Excel needed)
+formulas==1.3.4

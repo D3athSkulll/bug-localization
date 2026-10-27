@@ -1,0 +1,114 @@
+ran 69 file-level + 1023 statement-level rows in 31.6s
+
+======================================================================================================================
+FALSE EXCLUSION - top-k filter vs the buggy file (bugs whose buggy file is thrown away, of 3) and how much of the spectrum is cut
+IR configuration                       k=0.1  lost  cut    k=0.25 lost  cut    k=0.5  lost  cut 
+tf_cosine | paper                         2/3    62%        0/3    19%        0/3     5%     
+tfidf_authors | none                      0/3    42%        0/3    31%        0/3    11%     
+tfidf_smooth | paper                      0/3    32%        0/3    22%        0/3     9%     
+tfidf_sublinear | paper                   0/3    47%        0/3    24%        0/3    14%     
+tfidf_sublinear | split+stem              0/3    46%        0/3    27%        0/3    15%     
+bm25 | paper                              0/3    46%        0/3    20%        0/3     7%     
+bm25 | split+stem                         1/3    48%        0/3    29%        0/3    11%     
+rvsm | paper                              0/3    44%        0/3    27%        0/3    15%     
+rvsm | split+stem                         0/3    28%        0/3    27%        0/3    18%     
+lm_dirichlet | split+stem                 1/3    71%        1/3    69%        0/3    51%     
+lsi | split+stem                          0/3    52%        0/3    27%        0/3    12%     
+jaccard | paper                           0/3    50%        0/3    36%        0/3    31%     
+containment | paper                       0/3    43%        0/3    14%        0/3     8%     
+bluir_like | split+stem                   0/3    32%        0/3    21%        0/3     9%     
+rrf(bm25,tfidf,rvsm) | split+stem         0/3    32%        0/3    27%        0/3    18%     
+tfidf_sublinear | split+stem +name        0/3    46%        0/3    27%        0/3    15%     
+bm25 | split+stem +name                   0/3    47%        0/3    29%        0/3    11%     
+tf_cosine | paper +clean                  1/3    47%        0/3    19%        0/3     5%     
+tfidf_sublinear | split+stem +clean       0/3    46%        0/3    27%        0/3    15%     
+bm25 | split+stem +clean                  0/3    47%        0/3    29%        0/3    11%     
+rvsm | split+stem +clean                  0/3    28%        0/3    27%        0/3    18%     
+bluir_like | split+stem +clean            0/3    46%        0/3    21%        0/3     9%     
+lm_dirichlet | split+stem +clean          0/3    56%        0/3    54%        0/3    51%     
+
+======================================================================================================================
+FILE LEVEL - how well each IR configuration ranks the buggy FILE (Lang-1, Lang-2, Lang-3; 108 files each)
+IR configuration                       ranks      Top1  Top5 Top10    MRR    MAP  nDCG10  recall@10/25/50% files
+bm25 | split+stem +name                1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+rvsm | paper                           1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+rvsm | split+stem +clean               1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+tfidf_authors | none                   1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+tfidf_smooth | paper                   1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+tfidf_sublinear | paper                1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+tfidf_sublinear | split+stem +clean    1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+tfidf_sublinear | split+stem +name     1/1/1         3     3     3  1.000  1.000   1.000  1.00 / 1.00 / 1.00
+rvsm | split+stem                      1/2/1         2     3     3  0.833  0.833   0.877  1.00 / 1.00 / 1.00
+bluir_like | split+stem +clean         1/3/1         2     3     3  0.778  0.778   0.833  1.00 / 1.00 / 1.00
+lm_dirichlet | split+stem +clean       1/5/1         2     3     3  0.733  0.733   0.796  1.00 / 1.00 / 1.00
+lsi | split+stem                       1/5/1         2     3     3  0.733  0.733   0.796  1.00 / 1.00 / 1.00
+tfidf_sublinear | split+stem           1/5/1         2     3     3  0.733  0.733   0.796  1.00 / 1.00 / 1.00
+rrf(bm25,tfidf,rvsm) | split+stem      1/6/1         2     2     3  0.722  0.722   0.785  1.00 / 1.00 / 1.00
+bm25 | paper                           1/8/1         2     2     3  0.708  0.708   0.772  1.00 / 1.00 / 1.00
+bm25 | split+stem +clean               1/9/1         2     2     3  0.704  0.704   0.767  1.00 / 1.00 / 1.00
+bluir_like | split+stem                1/11/1        2     2     2  0.697  0.697   0.667  1.00 / 1.00 / 1.00
+bm25 | split+stem                      1/26/1        2     2     2  0.679  0.679   0.667  0.67 / 1.00 / 1.00
+lm_dirichlet | split+stem              1/35/1        2     2     2  0.676  0.676   0.667  0.67 / 0.67 / 1.00
+jaccard | paper                        1/5/2         1     3     3  0.567  0.567   0.673  1.00 / 1.00 / 1.00
+containment | paper                    1/8/2         1     2     3  0.542  0.542   0.649  1.00 / 1.00 / 1.00
+tf_cosine | paper +clean               8/10/16       0     0     2  0.096  0.096   0.202  0.67 / 1.00 / 1.00
+tf_cosine | paper                      8/23/16       0     0     1  0.077  0.077   0.105  0.33 / 1.00 / 1.00
+
+======================================================================================================================
+STATEMENT LEVEL - SFL formulas alone (no IR filter), best first
+method                                                         rank(avg)  TOP1/3/5w TOP1/3/5a   MRRw   MRRa   MAPa   EXAMa  vs SFL:ochiai W/D/L
+SFL:barinel                                                    3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:dstar                                                      3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:dstar3                                                     3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:jaccard                                                    3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:kulczynski2                                                3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:ochiai                                                     3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:ochiai2                                                    3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:sorensen_dice                                              3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:tarantula                                                  3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:op2                                                        3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.327  0.0072  0/3/0
+SFL:wong2                                                      628/201/631     0/0/0     0/0/0  0.003  0.003  0.004  0.7503  0/0/3
+
+======================================================================================================================
+STATEMENT LEVEL - ISBL (IR filter k then SFL), top 12 by expected MRR
+method                                                         rank(avg)  TOP1/3/5w TOP1/3/5a   MRRw   MRRa   MAPa   EXAMa  vs SFL:ochiai W/D/L
+ISBL[lm_dirichlet | split+stem +clean,k=0.1]+dstar             3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[lm_dirichlet | split+stem +clean,k=0.1]+ochiai            3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[tfidf_authors | none,k=0.1]+dstar                         3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[tfidf_authors | none,k=0.1]+ochiai                        3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[lsi | split+stem,k=0.1]+dstar                             3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0C:\Users\Prasun\Desktop\IRE\ire-buglocalization\envs\legacy37\lib\site-packages\scipy\stats\morestats.py:3141: UserWarning: Exact p-value calculation does not work if there are ties. Switching to normal approximation.
+  warnings.warn("Exact p-value calculation does not work if there are "
+C:\Users\Prasun\Desktop\IRE\ire-buglocalization\envs\legacy37\lib\site-packages\scipy\stats\morestats.py:3155: UserWarning: Sample size too small for normal approximation.
+  warnings.warn("Sample size too small for normal approximation.")
+
+ISBL[lsi | split+stem,k=0.1]+ochiai                            3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[containment | paper,k=0.1]+dstar                          3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[containment | paper,k=0.1]+ochiai                         3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[lm_dirichlet | split+stem +clean,k=0.25]+dstar            3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[lm_dirichlet | split+stem +clean,k=0.25]+ochiai           3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[lm_dirichlet | split+stem +clean,k=0.5]+dstar             3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+ISBL[lm_dirichlet | split+stem +clean,k=0.5]+ochiai            3.5/3/3.5      0/0/2     0/1/3  0.206  0.302  0.329  0.0072  0/3/0
+
+======================================================================================================================
+STATEMENT LEVEL - HYBRID (SFL + bug-report tie-breaking/blending), top 12 by expected MRR
+method                                                         rank(avg)  TOP1/3/5w TOP1/3/5a   MRRw   MRRa   MAPa   EXAMa  vs SFL:ochiai W/D/L
+HYBRID[bluir_like | split+stem,k=0.5,tie_file_text]+dstar      2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bluir_like | split+stem,k=0.5,tie_file_text]+ochiai     2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bluir_like | split+stem,k=1,tie_file_text]+dstar        2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bluir_like | split+stem,k=1,tie_file_text]+ochiai       2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem +clean,k=0.5,tie_file_text]+dstar     2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem +clean,k=0.5,tie_file_text]+ochiai    2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem +clean,k=1,tie_file_text]+dstar       2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem +clean,k=1,tie_file_text]+ochiai      2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem,k=0.5,tie_file_text]+dstar            2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem,k=0.5,tie_file_text]+ochiai           2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem,k=1,tie_file_text]+dstar              2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+HYBRID[bm25 | split+stem,k=1,tie_file_text]+ochiai             2/3/2          0/2/3     0/3/3  0.417  0.444  0.377  0.0062  2/1/0
+
+rank(avg) = best buggy-statement rank per bug (Lang-1/2/3) with tied statements averaged; w = worst-case ties, a = average ties.
+Saved:
+  C:\Users\Prasun\Desktop\IRE\ire-buglocalization\results\experiments\file_level_per_bug.csv
+  C:\Users\Prasun\Desktop\IRE\ire-buglocalization\results\experiments\file_level_summary.csv
+  C:\Users\Prasun\Desktop\IRE\ire-buglocalization\results\experiments\statement_level_per_bug.csv
+  C:\Users\Prasun\Desktop\IRE\ire-buglocalization\results\experiments\statement_level_summary.csv
+  C:\Users\Prasun\Desktop\IRE\ire-buglocalization\results\experiments\false_exclusion.csv

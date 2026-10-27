@@ -2,6 +2,7 @@
 envs/
 tools/
 work-*/
+work/
 defects4j/
 buglocalization/
 # generated / machine-specific data (the bug report is kept)

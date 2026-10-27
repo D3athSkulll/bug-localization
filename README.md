@@ -2,8 +2,9 @@
 
 Local, Windows-native reproduction of the paper **"Statement-level Software Bug Localization based on Information Retrieval and Spectrum"** (Li, Yue, Lan, Cui; IEEE SMC 2023).
 
-> **Status (2026-10-15): one bug (Defects4J Lang-1) works end to end. The paper is NOT reproduced.**
-> The paper evaluates 373 bugs; this workspace has run 1. Nothing here is claimed to match the paper's numbers.
+> **Status (2026-10-25): three bugs (Defects4J Lang-1, Lang-2, Lang-3) work end to end. The paper is NOT reproduced.**
+> The paper evaluates 373 bugs; this workspace has run 3. Nothing here is claimed to match the paper's numbers.
+> Newest work (IR models, extra metrics, hybrid ranking, cosine audit, Lang-2/3): see "14. Improvements and other Lang bugs" at the end and `docs/experiments.md`.
 > The upstream clones, JDK and Python environments are not stored in this repository; see "Setting up from a fresh clone" below.
 
 ---
@@ -188,7 +189,7 @@ All commands are for PowerShell, from this folder.
 ```powershell
 cd <path-to-this-repository>
 
-# 1. Full demo: versions, checkout, compile, failing test, 63 unit tests, baseline with explanations (about 1 minute)
+# 1. Full demo: versions, checkout, compile, failing test, 104 unit tests, baseline with explanations (about 1 minute)
 .\scripts\run\demo.ps1
 # if PowerShell blocks scripts:
 powershell -ExecutionPolicy Bypass -File .\scripts\run\demo.ps1
@@ -241,7 +242,7 @@ requirements/           legacy.txt (py3.7), modern.txt (py3.12), development.txt
 results/raw/            all outputs
 scripts/setup/          env.ps1, env.sh (put Java 8 + Python 3.7 on the PATH)
 scripts/run/            demo.ps1, smoke_lang1.sh, sweep_k.py
-tests/                  63 unit tests
+tests/                  104 unit tests
 tools/, envs/           portable JDK 8, JaCoCo, compiled runner; Python environments
 buglocalization/        Naplues/buglocalization @ bbd67ea6 (contains the authors' IR script and BugLocator)
 defects4j/              rjust/defects4j, tag v1.4.0 @ fcf6b9bb
@@ -263,7 +264,7 @@ work-lang/              scratch checkout of apache/commons-lang (the program bei
 
 ## 9. Tests
 
-63 unit tests pass on Python 3.7 and 3.12 (`python -m pytest -q tests`). They cover cosine similarity (identical, orthogonal, zero and empty vectors, repeated terms, keywords, camelCase and snake_case), Ochiai and DStar edge cases (all tests fail, all pass, covered by every test, covered by none), spectrum reduction, ranking ties, TOP@N and MRR (rank 1, 3, 5, beyond N, missing and multiple buggy lines), the extra diagnostics, and the timer. One test checks that the IR matches the authors' scikit-learn pipeline to 1e-9.
+104 unit tests pass on Python 3.7 and 3.12 (`python -m pytest -q tests`). They cover cosine similarity (identical, orthogonal, zero and empty vectors, repeated terms, keywords, camelCase and snake_case), Ochiai and DStar edge cases (all tests fail, all pass, covered by every test, covered by none), spectrum reduction, ranking ties, TOP@N and MRR (rank 1, 3, 5, beyond N, missing and multiple buggy lines), the extra diagnostics, and the timer. One test checks that the IR matches the authors' scikit-learn pipeline to 1e-9.
 
 ## 10. Known differences from the paper (all unresolved)
 
@@ -300,4 +301,33 @@ work-lang/              scratch checkout of apache/commons-lang (the program bei
 
 ## 13. More detail
 
-`docs/reproduction.md` (step-by-step answers to the plan's 18 questions), `docs/baseline.md` (pinned versions and commands), `docs/environment-audit.md` (what was found and the blockers).
+`docs/reproduction.md` (step-by-step answers to the plan's 18 questions), `docs/baseline.md` (pinned versions and commands), `docs/environment-audit.md` (what was found and the blockers), `docs/experiments.md` (IR models, metrics, hybrid ranking, Lang-2/3), `docs/literature.md` (papers scanned for metrics and methods), and **`docs/REPORT.md`** (the full illustrated report: original and new pipeline diagrams, every metric with formula and example, Lang-1 and Lang-2 results). All documents are combined in **`docs/ISBL_complete_documentation.pdf`** (31 pages, clickable outline), rebuilt with `envs\modern312\Scripts\python scripts\run\build_pdf.py` (needs Microsoft Edge, `markdown`, `pypdf`, `reportlab`).
+
+## 14. Improvements and other Lang bugs (Lang-1, Lang-2, Lang-3)
+
+Requested after faculty review: more comparison metrics, a proper check of the cosine similarity, tf-idf and better IR measures, papers for new metrics, and runs on other Lang bugs. Scope is **three bugs**; every configuration was fixed in advance and nothing was tuned on them, so the numbers are indicative only.
+
+| Bug | Type | Buggy lines | IR rank of the buggy file (paper's raw-tf cosine / tf-idf) |
+|---|---|---|---|
+| Lang-1 (LANG-747) | wrong condition | `NumberUtils.java` 467, 468, 471 | 8 / 1 |
+| Lang-2 (LANG-879) | missing validation (omission) | `LocaleUtils.java` 92 | 23 / 1 |
+| Lang-3 (LANG-693) | missing precision branches (omission) | `NumberUtils.java` 593, 597, 601, 605 | 16 / 1 |
+
+What the experiments show (details, tables and caveats in `docs/experiments.md`):
+- **Cosine audit:** our cosine equals scikit-learn and SciPy to 1e-16 and has the expected properties. The weakness is the raw term-frequency *weighting*: the wrong top-ranked file gets 88-100% of its score from words found in most files.
+- **IR models:** idf-weighted models (tf-idf, rVSM, LSI) rank the buggy file 1st on all three bugs; the paper's raw-tf cosine ranks it 8th / 23rd / 16th. Stripping the pasted stack trace in Lang-2's report (49 foreign frames) helps most models.
+- **False exclusion:** at k = 10% the paper's raw-tf IR throws the buggy file away on 2 of 3 bugs; tf-idf, rVSM and a BLUiR-style model keep it while cutting 44-47% of the statements.
+- **SFL formulas:** 11 formulas give the same ranking (except Wong2, far worse): statements with identical (ef, ep, nf, np) cannot be separated by any formula.
+- **Hybrid ranking:** breaking exact SFL ties with the bug-report words on each statement lowers the expected rank from 3.5 to 2 on Lang-1 and Lang-3 (no change on Lang-2); a plain linear blend is worse than Ochiai. This is our exploratory extension, picked post hoc among 12 variants on the same three bugs.
+
+```powershell
+. .\scripts\setup\env.ps1
+python scripts\bugs\prepare_lang_bug.py 2 3        # prepare Lang-2, Lang-3 (Maven + internet + JDK 8; one time)
+python scripts\run\cosine_audit.py                 # cosine correctness and per-term diagnosis
+python scripts\run\run_experiments.py              # IR models x SFL formulas x ISBL x hybrids, about 50 s
+envs\modern312\Scripts\python scripts\run\build_excel_experiments.py    # results\Lang-1-2-3_experiments.xlsx
+.\scripts\run\demo_experiments.ps1                 # the two commands above that print tables
+python -m isbl.baseline.pipeline configs\bugs\Lang-2.json --explain     # standard pipeline on another bug
+```
+
+New code: `isbl/baseline/ir_models.py` (12 IR models + options), `hybrid.py`, `answer_key.py`, extra formulas in `sfl.py`, extra metrics in `isbl/evaluation/metrics.py`, `isbl/experiments/engine.py`, `scripts/bugs/prepare_lang_bug.py`. The coverage runner now analyses only executed classes (about 8x faster, identical coverage). Config key `ir_model` selects any model in the standard pipeline (e.g. `configs/lang1_tfidf_sublinear.json`).

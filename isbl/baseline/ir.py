@@ -18,7 +18,38 @@ STOPWORDS = frozenset(
     "a an and are as at be by for from has he in is it its of on or that the to was were will with".split())
 
 
-def _tokenize(text, split_identifiers=False, remove_keywords=False, remove_stopwords=False):
+_LICENSE = re.compile(r"/\*(?:(?!\*/).)*?(?:Licensed to the Apache|Apache License)(?:(?!\*/).)*?\*/", re.S)
+_STEMMER = []
+
+
+_STEM_CACHE = {}
+
+
+def _stem(word):
+    """Porter-family English stemmer (snowballstemmer); identity if the package is missing. Results are cached."""
+    r = _STEM_CACHE.get(word)
+    if r is None:
+        r = _STEM_CACHE[word] = _stem_uncached(word)
+    return r
+
+
+def _stem_uncached(word):
+    if not _STEMMER:
+        try:
+            import snowballstemmer
+            _STEMMER.append(snowballstemmer.stemmer("english").stemWord)
+        except ImportError:                                  # pragma: no cover
+            _STEMMER.append(lambda w: w)
+    return _STEMMER[0](word)
+
+
+def _tokenize(text, split_identifiers=False, remove_keywords=False, remove_stopwords=False, stem=False,
+              drop_license=False):
+    """Defaults reproduce the authors' behaviour (sklearn CountVectorizer tokens, lowercase, nothing else).
+    split_identifiers: camelCase/PascalCase/snake_case parts are added next to the full identifier.
+    stem: Snowball English stemming of every token.  drop_license: remove the Apache licence header comment."""
+    if drop_license:
+        text = _LICENSE.sub(" ", text, count=1)
     tokens = []
     for raw in _TOKEN.findall(text):
         parts = [raw]
@@ -34,7 +65,7 @@ def _tokenize(text, split_identifiers=False, remove_keywords=False, remove_stopw
                 continue
             if remove_stopwords and p in STOPWORDS:
                 continue
-            tokens.append(p)
+            tokens.append(_stem(p) if stem else p)
     return tokens
 
 

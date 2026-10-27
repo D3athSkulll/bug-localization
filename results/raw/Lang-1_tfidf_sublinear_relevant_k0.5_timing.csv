@@ -1,0 +1,24 @@
+stage,seconds,share_pct
+01 load_source_files,0.018146,2.01
+02 load_bug_report,0.000217,0.02
+03 ir_rank_files (tokenise+cosine),0.858574,95.13
+04 ir_select_top_k,0.000018,0.00
+05 coverage_collect (JVM+JaCoCo),0.000002,0.00
+06 coverage_parse,0.002281,0.25
+07 trigger_test_filter,0.000177,0.02
+08 build_spectrum_full,0.001249,0.14
+09 reduce_tests (paper II-B),0.000086,0.01
+10 build_spectrum_reduced,0.000860,0.10
+11 answer_key,0.000264,0.03
+sfl_score_and_rank:ochiai,0.003627,0.40
+metrics_and_diagnostics:ochiai,0.007649,0.85
+sfl_score_and_rank:ISBL-ochiai,0.002574,0.29
+metrics_and_diagnostics:ISBL-ochiai,0.000257,0.03
+sfl_score_and_rank:dstar,0.003329,0.37
+metrics_and_diagnostics:dstar,0.000279,0.03
+sfl_score_and_rank:ISBL-dstar,0.002688,0.30
+metrics_and_diagnostics:ISBL-dstar,0.000241,0.03
+jvm:test_exec_ms,0.094,
+jvm:jacoco_dump_ms,0.022,
+jvm:jacoco_analyze_ms,0.840,
+jvm:jvm_total_ms,1.149,

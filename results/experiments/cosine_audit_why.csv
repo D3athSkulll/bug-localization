@@ -1,0 +1,7 @@
+bug,role,file,ir_rank,cosine,doc_tokens,query_terms_matched,query_terms_total,share_from_terms_in_>50%_of_files,top_terms (share of cosine)
+Lang-1,top-1 file,org/apache/commons/lang3/Validate.java,1,0.156,3473,15,50,0.913,not=69%; string=16%; method=5%; check=4%; integer=2%
+Lang-1,buggy file,org/apache/commons/lang3/math/NumberUtils.java,8,0.1198,2930,33,50,0.438,not=22%; string=18%; numberutils=16%; integer=11%; hex=8%
+Lang-2,top-1 file,org/apache/commons/lang3/JavaVersion.java,1,0.3169,289,10,125,0.999,java=84%; org=7%; apache=6%; string=2%; method=1%
+Lang-2,buggy file,org/apache/commons/lang3/LocaleUtils.java,23,0.1112,856,17,125,0.531,locale=43%; java=35%; org=6%; apache=5%; method=4%
+Lang-3,top-1 file,org/apache/commons/lang3/reflect/MethodUtils.java,1,0.2305,1526,12,35,0.884,method=78%; string=10%; no=4%; exception=2%; thrown=2%
+Lang-3,buggy file,org/apache/commons/lang3/math/NumberUtils.java,16,0.1376,2910,22,35,0.551,string=51%; numberutils=15%; number=15%; bigdecimal=4%; method=4%
