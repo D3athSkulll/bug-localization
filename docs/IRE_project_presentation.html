@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IRE ISBL Project Report</title>
+  <script>
+    window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --sidebar: 258px;
+      --ink:#202124; --muted:#69707d; --line:#dde1e7; --soft:#f7f8fa;
+      --blue:#2563eb; --green:#16836a; --amber:#b76e00; --red:#b42318;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:#fff;color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;overflow:hidden}
+    .app{height:100vh;display:grid;grid-template-columns:var(--sidebar) 1fr}
+    aside{background:#fafafb;border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+    .brand{height:72px;display:flex;align-items:center;gap:10px;padding:0 17px;border-bottom:1px solid var(--line)}
+    .brand-mark{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#20242b;color:#fff;font-weight:800}
+    .brand strong,.brand span{display:block}.brand span{color:var(--muted);font-size:11px;margin-top:2px}
+    .topic-label{padding:14px 17px 6px;color:#8b919a;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    nav{overflow-y:auto;padding:2px 9px 14px;flex:1}
+    nav button{width:100%;border:0;background:transparent;color:#4d535c;text-align:left;border-radius:7px;padding:8px 9px;margin:1px 0;cursor:pointer;
+      font:500 12.5px/1.25 Inter,"Segoe UI",sans-serif;display:grid;grid-template-columns:27px 1fr;gap:3px}
+    nav button:hover{background:#f0f1f3} nav button.active{background:#eaf0ff;color:#1747a6;font-weight:700}
+    nav .num{width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:#eceef2;color:#777e88;font-size:10px}
+    nav button.active .num{background:var(--blue);color:#fff}
+    main{height:100vh;overflow-y:auto;scroll-behavior:smooth}
+    .stage{width:min(900px,calc(100% - 64px));margin:0 auto;padding:32px 0 100px}
+    .doc-section{padding:38px 0 44px;border-bottom:1px solid #e5e7eb;scroll-margin-top:18px}
+    .eyebrow{color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px}
+    h1{margin:0 0 16px;font-size:44px;line-height:1.08;letter-spacing:-1.5px}
+    h2{margin:0 0 18px;font-size:29px;line-height:1.18;letter-spacing:-.45px}
+    h3{margin:18px 0 8px;font-size:17px}
+    p{margin:7px 0;line-height:1.58;color:#4d535c;font-size:15px}
+    .lead{font-size:18px;line-height:1.48;max-width:820px}
+    ul,ol{margin:7px 0;padding-left:22px;color:#4d535c} li{margin:7px 0;line-height:1.48;font-size:14.5px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .box{border-left:3px solid #d6dae2;padding:12px 15px;background:#fafafa}.box.blue{border-color:#b9caf1;background:#f7f9ff}
+    .box.green{border-color:#acd5c7;background:#f7fbf9}.box.amber{border-color:#e4c37f;background:#fffaf0}.box.red{border-color:#dfaaa4;background:#fff8f7}
+    .formula{background:#20242b;color:#f7f8fa;border-radius:8px;padding:12px 14px;font-family:Consolas,monospace;font-size:14px;margin:9px 0;line-height:1.5}
+    .formula small{display:block;color:#b8c0ca;margin-top:5px;font-family:Inter,"Segoe UI",sans-serif}
+    table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+    thead th{background:#eef2f8;color:#374151;text-align:left;font-size:11px;letter-spacing:.035em;border-bottom:2px solid #ccd6e5}
+    th,td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+    tbody tr:nth-child(even){background:#fafbfc}
+    tbody tr:hover{background:#f4f7fb}
+    tr:last-child td{border-bottom:0}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;margin:12px 0}
+    .table-wrap table{margin:0}.table-wrap th{border-bottom:2px solid #ccd6e5}
+    table.code-map{table-layout:fixed}
+    table.code-map th:first-child{width:24%}table.code-map th:nth-child(2){width:43%}table.code-map th:nth-child(3){width:33%}
+    table.code-map td:first-child{overflow-wrap:anywhere}
+    table caption{text-align:left;font-size:12px;font-weight:800;color:#4b5563;padding:10px 11px 6px;background:#fff}
+    .formula-caption{font-size:12.5px;color:#69707d;margin:-5px 0 12px;line-height:1.45}
+    .formula-use{display:block;color:#69707d;font-size:12px;line-height:1.4;margin-top:4px}
+    figure{margin:12px 0}figure img{display:block}
+    figcaption{font-size:12.5px;color:#69707d;line-height:1.5;margin-top:8px;border-left:3px solid #d8deea;padding:7px 10px;background:#fafbfc}
+    code{font-family:Consolas,monospace;font-size:.94em}
+    a{color:#1e63c8;text-decoration:none}a:hover{text-decoration:underline}
+    .tag{display:inline-block;padding:3px 7px;border-radius:999px;background:#eef2ff;color:#3156a7;font-size:11px;font-weight:700}
+    .tag.green{background:#eaf7f2;color:#16705c}.tag.amber{background:#fff3d9;color:#946000}.tag.red{background:#fdebea;color:#9f3028}
+    .metric{font-size:27px;font-weight:800;letter-spacing:-.5px}.metric small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+    .pipeline,.console,.figure{width:100%;max-height:430px;object-fit:contain;border:1px solid var(--line);border-radius:8px;background:#fff}
+    .zoomable{cursor:zoom-in;transition:box-shadow .15s, border-color .15s}
+    .zoomable:hover{box-shadow:0 8px 24px rgba(31,35,48,.14);border-color:#aeb8c7}
+    .image-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(18,22,29,.92);padding:24px}
+    .image-modal.open{display:flex}.image-modal img{max-width:96vw;max-height:92vh;width:auto;height:auto;object-fit:contain;cursor:zoom-out}
+    .image-modal button{position:fixed;top:16px;right:18px;width:42px;height:42px;border:0;border-radius:50%;background:#fff;color:#202124;font-size:24px;cursor:pointer}
+    .formula,.math-block{background:#f7f9fc;border:1px solid #dde5f1;border-radius:8px;padding:14px 16px;margin:12px 0;color:#20242b;overflow-x:auto}
+    mjx-container{font-size:111%!important}
+    .figure{max-height:360px}.small{font-size:12px!important;color:var(--muted)}
+    .stage-map{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0}
+    .stage-map div{border-top:3px solid #ccd3de;padding:9px 6px 0}.stage-map strong{display:block}.stage-map span{font-size:12px;color:var(--muted)}
+    .metric-list{display:grid;grid-template-columns:155px 1fr;gap:8px 14px}.metric-list dt{font-weight:800;font-size:13px}.metric-list dd{margin:0;color:#4d535c;font-size:13.5px;line-height:1.45}
+    .metric-flow{display:block}.metric-flow .math-block{margin:10px 0 5px}
+    .metric-flow p{margin:0 0 14px;padding:0 16px}
+    .hybrid-metrics{display:grid;grid-template-columns:1fr;gap:10px}.hybrid-metric{border-left:3px solid #b9caf1;background:#f7f9ff;padding:10px 14px}
+    .hybrid-metric strong{display:block;margin-bottom:4px}.hybrid-metric p{margin:3px 0}
+    @media(max-width:900px){:root{--sidebar:210px}.stage{width:calc(100% - 32px)}.grid-2,.grid-3{grid-template-columns:1fr}.stage-map{grid-template-columns:1fr 1fr}.metric-list{grid-template-columns:125px 1fr}}
+    @media print{
+      html,body{height:auto;overflow:visible;font-size:10.5pt}
+      body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+      .app{display:block;height:auto}aside{display:none}main{height:auto;overflow:visible}
+      .stage{width:100%;padding:0}.doc-section{padding:18pt 0 22pt;break-inside:auto;page-break-after:auto}
+      h1,h2,h3,figure,.math-block,.box{break-inside:avoid;page-break-inside:avoid}
+      table{break-inside:auto;page-break-inside:auto}caption{break-after:avoid}
+      thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
+      .table-wrap{overflow:visible;border-color:#bbc2cc}
+      .table-wrap table{font-size:8.5pt}
+      .pipeline,.console,.figure{max-height:220pt}
+      .image-modal{display:none!important}
+      a{color:inherit;text-decoration:underline}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><div class="brand-mark">IRE</div><div><strong>ISBL Project</strong><span>Complete technical report</span></div></div>
+    <div class="topic-label">Document topics</div><nav id="topics"></nav>
+  </aside>
+  <main><div class="stage" id="stage">
+
+    <section class="doc-section" data-title="Overview">
+      <div class="eyebrow">Information Retrieval in Engineering</div>
+      <h1>Statement-Level Bug Localization using Information Retrieval and Spectrum</h1>
+      <p class="lead">This project ranks executable Java lines so a developer can inspect the most suspicious code first. It combines a Jira bug report, Java source text and the pass/fail plus line-coverage evidence of tests.</p>
+      <div class="grid-3">
+        <div class="box"><div class="metric">3</div><small>Defects4J Lang bugs</small></div>
+        <div class="box blue"><div class="metric">108</div><small>Java files in each bug sample</small></div>
+        <div class="box green"><div class="metric">23</div><small>IR configurations tested</small></div>
+      </div>
+      <p><b>Scope:</b> Lang-1, Lang-2 and Lang-3 from Defects4J 1.4.0. The original publication evaluates 373 buggy versions across six projects. This implementation is a working reconstruction and a three-bug case study, not a reproduction of the paper's numerical claims.</p>
+      <p><b>Central research question:</b> Can a file-level text filter safely reduce the search area, and can line-level text break the ties left by spectrum formulas?</p>
+      <p><a href="REPORT.md">Project report</a> · <a href="experiments.md">Experiment protocol</a> · <a href="ISBL_complete_documentation.pdf" target="_blank">Combined PDF</a> · <a href="../README.md">Repository README</a></p>
+    </section>
+
+    <section class="doc-section" data-title="Dataset and configuration">
+      <div class="eyebrow">01 — Experimental data</div>
+      <h2>Three bug types test three different localization difficulties</h2>
+      <table>
+        <caption>Table: Three-bug dataset summary</caption>
+        <thead><tr><th>Jira bug</th><th>Defect mechanism</th><th>Answer-key lines</th><th>Relevant tests</th><th>Full spectrum lines</th></tr></thead>
+        <tbody>
+          <tr><td><b>LANG-747 / Lang-1</b></td><td>Wrong hexadecimal range condition in <code>createNumber()</code></td><td><code>NumberUtils.java:467, 468, 471</code></td><td>173</td><td>981</td></tr>
+          <tr><td><b>LANG-879 / Lang-2</b></td><td>Missing locale-validation guard</td><td><code>LocaleUtils.java:92</code>, omission proxy</td><td>14</td><td>208</td></tr>
+          <tr><td><b>LANG-693 / Lang-3</b></td><td>Missing floating-point precision and type-selection guards</td><td><code>NumberUtils.java:593, 597, 601, 605</code></td><td>172</td><td>979</td></tr>
+        </tbody>
+      </table>
+      <h3>How the JSON configurations control an experiment</h3>
+      <table>
+        <caption>Table: Configuration fields used to run a bug experiment</caption>
+        <thead><tr><th>Configuration field</th><th>Meaning in this project</th><th>Examples</th></tr></thead>
+        <tbody>
+          <tr><td><code>bug_report</code></td><td>Jira summary and description used as the IR query</td><td><code>data/bug_reports/Lang-*.json</code></td></tr>
+          <tr><td><code>repo / src_dir / classes_dir</code></td><td>Buggy source, compiled classes and test classes locations</td><td><code>work-lang/src/main/java</code></td></tr>
+          <tr><td><code>coverage_file</code></td><td>Cached per-test JaCoCo matrix</td><td><code>data/coverage/Lang-1.tsv</code></td></tr>
+          <tr><td><code>k</code></td><td>Fraction of files retained after IR ranking</td><td>0.1, 0.25, 0.5</td></tr>
+          <tr><td><code>sfl</code></td><td>Spectrum formula or formulas to run</td><td><code>ochiai</code>, <code>dstar</code></td></tr>
+          <tr><td><code>tie</code></td><td>Position assigned when scores are equal</td><td><code>worst</code> baseline configuration</td></tr>
+          <tr><td><code>ir_model / ir_options</code></td><td>Retrieval model and preprocessing choices</td><td><code>tfidf_sublinear</code>, split/stem/clean</td></tr>
+          <tr><td><code>test_scope</code></td><td>Whether relevant tests or the full Lang suite are analyzed</td><td><code>relevant</code> / <code>all</code></td></tr>
+          <tr><td><code>trigger_tests_file</code></td><td>Defects4J test expected to fail</td><td><code>trigger_tests/1</code>, <code>/2</code>, <code>/3</code></td></tr>
+          <tr><td><code>answer_key_patch</code></td><td>Developer source patch used only for evaluation</td><td>Defects4J patch or prepared Lang-2/3 patch</td></tr>
+        </tbody>
+      </table>
+      <p><b>Omission answer key:</b> for a missing guard or missing branch, the patch has no existing buggy line at the exact insertion point. The answer-key parser uses the first existing buggy-side line after the gap. This is a scoring convention, not proof that the existing adjacent line caused the defect.</p>
+      <p><a href="../configs/lang1_k50.json" target="_blank">Lang-1 50% baseline JSON</a> · <a href="../configs/lang1_tfidf_sublinear.json" target="_blank">Lang-1 TF-IDF JSON</a> · <a href="../configs/bugs/Lang-2.json" target="_blank">Lang-2 JSON</a> · <a href="../configs/bugs/Lang-3.json" target="_blank">Lang-3 JSON</a></p>
+    </section>
+
+    <section class="doc-section" data-title="Original pipeline">
+      <div class="eyebrow">02 — Original implementation</div>
+      <h2>The original pipeline: retrieval followed by spectrum ranking</h2>
+      <figure>
+        <img class="pipeline zoomable" src="images/pipeline_original_v2.png" alt="Original v2 ISBL pipeline diagram" data-caption="Original pipeline v2">
+        <figcaption><b>Figure: Original pipeline.</b> Blue boxes are inputs, yellow boxes are baseline IR stages, green boxes show test/spectrum evidence, and the red/purple stages score, rank and evaluate lines. Click to enlarge.</figcaption>
+      </figure>
+      <h2>Pipeline Stage 1: read a bug report and build a file ranking</h2>
+      
+      <ol>
+        <li><b>Input.</b> Read the Jira summary and description, checkout the buggy source, and identify Defects4J relevant tests.</li>
+        <li><b>Preprocess text.</b> Convert report and source text to lowercase words. Remove Java keywords and stop words. Optionally split identifiers and stems in the expanded engine.</li>
+        <li><b>Create term vectors.</b> Represent the bug report and every Java file as term-frequency vectors. In the baseline, the raw word count is the vector weight.</li>
+        <li><b>Rank files.</b> Use cosine similarity to compare the report vector with each file vector. Sort descending and keep the top <code>k%</code>.</li>
+      </ol>
+      <h2>Pipeline Stage 2: collect test coverage and build a spectrum</h2>
+      <ol>
+        <li><b>Run tests separately.</b> The JaCoCo runner starts the Java 8 test process and records which executable source lines each test executes.</li>
+        <li><b>Classify tests.</b> Only the Defects4J trigger test is considered failing unless the relevant/full-suite run explicitly applies the project cleaning rule.</li>
+        <li><b>Filter candidates.</b> Remove covered lines that belong to files omitted by the top-k shortlist.</li>
+        <li><b>Reduce tests.</b> After candidate removal, rebuild the spectrum and drop tests that execute none of the remaining lines.</li>
+        <li><b>Count each line.</b> Produce <code>(ef, ep, nf, np)</code>: failing/pass runs that execute the line and failing/pass runs that skip it.</li>
+      </ol>
+      <h2>Pipeline Stage 3: score, rank and evaluate</h2>
+      <ol>
+        <li><b>Apply SFL.</b> Compute Ochiai, DStar or another formula independently for every surviving executable line.</li>
+        <li><b>Rank lines.</b> Sort descending by score. Equal values are ties; the baseline reports worst, average and best possible positions.</li>
+        <li><b>Evaluate.</b> Match ranked source locations against the developer patch-derived answer key and calculate the metrics below.</li>
+      </ol>
+      <h3>How to present the original diagram one stage at a time</h3>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: Original pipeline — input, process and output for each diagram region</caption>
+        <thead><tr><th>Diagram region</th><th>What enters</th><th>What happens</th><th>What leaves</th></tr></thead>
+        <tbody>
+          <tr><td><b>Blue input</b></td><td>Bug report, 108 source files, project tests</td><td>The three evidence sources are kept separate</td><td>Text query, source corpus, test executions</td></tr>
+          <tr><td><b>Yellow Step A</b></td><td>Report and source files</td><td>Tokenize, clean, vectorize and cosine-rank files</td><td>Shortlist of top k% files</td></tr>
+          <tr><td><b>Green Step B</b></td><td>Tests and shortlist</td><td>Collect JaCoCo line coverage and ef/ep/nf/np counts</td><td>Reduced test×line spectrum</td></tr>
+          <tr><td><b>Red Steps C–D</b></td><td>Reduced spectrum and answer key</td><td>Score/rank lines, then compare only after ranking</td><td>TOP@N, MRR and ranked evidence</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><a href="images/pipeline_original_v2.png" target="_blank">Open original v2 pipeline</a> · <a href="images/pipeline_original.dot" target="_blank">Open Graphviz source</a></p>
+    </section>
+
+    <section class="doc-section" data-title="Updated pipeline">
+      <div class="eyebrow">03 — Expanded implementation</div>
+      <h2>One bullet for each stage of the current experiment pipeline</h2>
+      <figure>
+        <img class="pipeline zoomable" src="images/pipeline_new_v2.png" alt="Updated v2 ISBL experiment pipeline diagram" data-caption="Updated pipeline v2">
+        <figcaption><b>Figure: Updated pipeline.</b> Green boxes indicate new/improved stages, yellow boxes are configurable baseline stages, and dotted arrows carry file score \(F\) into hybrid ranking. Click to enlarge.</figcaption>
+      </figure>
+      <ol>
+        <li><b>Prepare three buggy revisions.</b> Lang-1 uses mapped Apache history; Lang-2/3 prepare fixed commits and reverse the Defects4J source patch to reconstruct the buggy side.</li>
+        <li><b>Clean report noise.</b> Strip Java stack-frame lines when requested, because Lang-2 contains 49 unrelated pasted frames that add generic terms.</li>
+        <li><b>Compare 23 retrieval configurations.</b> Run raw TF, TF-IDF variants, BM25, rVSM, language model, LSI, set models, BLUiR-style, rank fusion and preprocessing combinations.</li>
+        <li><b>Collect faster JaCoCo evidence.</b> Run each relevant test with per-test coverage while analyzing only executed classes, instead of re-analyzing every class after every test.</li>
+        <li><b>Apply file cutoffs.</b> Test 10%, 25% and 50% shortlists. Record when a buggy file is excluded and how much of the statement spectrum is removed.</li>
+        <li><b>Calculate 11 SFL scores.</b> Use Ochiai and DStar for the main ISBL and hybrid comparison, and compare all formulas in the SFL-only grid.</li>
+        <li><b>Add optional tie-breaking text.</b> Preserve exact SFL order, and only use file and/or statement text to reorder lines sharing the same spectrum score.</li>
+        <li><b>Record all metric families.</b> Export file retrieval, first-hit, all-relevant-item, search-effort, statistical and diagnosis values to CSV and Excel.</li>
+        <li><b>Generate evidence artifacts.</b> Save per-bug JSON/CSV values, console text, cosine audit data and a combined Excel workbook for presentation.</li>
+      </ol>
+      <h3>How the updated diagram differs from the original</h3>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: Updated pipeline — new work, purpose and artifact</caption>
+        <thead><tr><th>Updated region</th><th>New work performed</th><th>Why it matters</th><th>Output used later</th></tr></thead>
+        <tbody>
+          <tr><td><b>Green query cleaning</b></td><td>Remove stack-frame lines and optional license text</td><td>Prevents an unrelated stack trace from dominating common terms</td><td>Clean report text</td></tr>
+          <tr><td><b>Yellow preprocessing</b></td><td>Remove keywords/stops, split identifiers, stem words</td><td>Controls text granularity and noise</td><td>Comparable query and file token lists</td></tr>
+          <tr><td><b>Green IR zoo</b></td><td>Compare 12 model families/23 configurations</td><td>Tests whether weighting and structure improve file rank</td><td>File scores F and ordered shortlist</td></tr>
+          <tr><td><b>Yellow coverage runner</b></td><td>Analyze only executed classes per test</td><td>Keeps equivalent coverage with lower collection cost</td><td>Test×line coverage matrix</td></tr>
+          <tr><td><b>Red scoring grid</b></td><td>Run 11 formulas plus Ochiai/DStar hybrids</td><td>Shows whether coverage formulas solve the tie problem</td><td>Spectrum score S</td></tr>
+          <tr><td><b>Green hybrid step</b></td><td>Add file score F and statement score T to exact-tie keys</td><td>Uses independent bug-report text without overriding unequal S scores</td><td>Final statement ranking</td></tr>
+          <tr><td><b>Green output step</b></td><td>Write CSV, Excel, timing, audit and diagnostics</td><td>Creates transparent evidence for all comparisons</td><td>Presenter tables and caveats</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><a href="images/pipeline_new_v2.png" target="_blank">Open updated v2 pipeline</a> · <a href="images/pipeline_new.dot" target="_blank">Open Graphviz source</a></p>
+
+      <h3>How our code implements the pipeline</h3>
+      <p>The diagram describes the research flow; these modules turn it into executable steps. The first six rows create the ranked candidates, and the final row evaluates those candidates against the patch-derived answer key. In particular, the answer key is not passed into retrieval, coverage collection, or ranking.</p>
+      <div class="table-wrap">
+      <table class="code-map">
+        <caption>Table: Source-code map from input to evaluated result</caption>
+        <thead><tr><th>Code location</th><th>What the code does</th><th>Why that step matters</th></tr></thead>
+        <tbody>
+          <tr><td><a href="../isbl/baseline/pipeline.py"><code>baseline/pipeline.py</code></a></td><td>Loads the JSON configuration, Java files and Jira summary/description; coordinates one complete baseline run and records stage timings.</td><td>Provides the reproducible path from a bug configuration to result rows.</td></tr>
+          <tr><td><a href="../isbl/baseline/ir.py"><code>baseline/ir.py</code></a> and <a href="../isbl/baseline/ir_models.py"><code>baseline/ir_models.py</code></a></td><td>Tokenizes the report and source, applies configured preprocessing, computes model scores, sorts files, and selects the top-\(k\) shortlist.</td><td>Converts text relevance into an ordered file-level search area; model rankings are deterministic, with file name as the tie-break.</td></tr>
+          <tr><td><a href="../isbl/baseline/spectrum.py"><code>baseline/spectrum.py</code></a></td><td>Reads per-test JaCoCo coverage, counts executions and omissions, filters non-trigger failures where configured, and reduces tests/lines to shortlisted files.</td><td>Builds the evidence that connects test outcomes to executable source lines.</td></tr>
+          <tr><td><a href="../isbl/baseline/sfl.py"><code>baseline/sfl.py</code></a></td><td>Maps each line's \((ef,ep,nf,np)\) tuple to a suspiciousness value, including Ochiai, DStar and the additional formulas.</td><td>Applies the same formula independently to every line in the full or reduced spectrum.</td></tr>
+          <tr><td><a href="../isbl/baseline/ranking.py"><code>baseline/ranking.py</code></a></td><td>Sorts lines by descending score and assigns best, average, or worst rank to tied groups.</td><td>Makes tie uncertainty explicit instead of silently choosing an arbitrary rank.</td></tr>
+          <tr><td><a href="../isbl/baseline/hybrid.py"><code>baseline/hybrid.py</code></a></td><td>Computes normalized file and statement-text evidence, then builds either exact-tie keys or the explicitly cross-score linear/multiplicative hybrids.</td><td>Separates variants that preserve SFL ordering from variants allowed to change it.</td></tr>
+          <tr><td><a href="../isbl/evaluation/metrics.py"><code>evaluation/metrics.py</code></a>, <a href="../isbl/experiments/engine.py"><code>experiments/engine.py</code></a> and <a href="../scripts/run/run_experiments.py"><code>run_experiments.py</code></a></td><td>Derives the answer key for evaluation, calculates per-bug and aggregate metrics, and exports CSV summaries and diagnostics.</td><td>Keeps evaluation separate from ranking and makes comparisons auditable from saved outputs.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><b>Important code-level distinction:</b> the baseline runner and the experiment engine share the ranking, spectrum, metric, and formula helpers, but serve different purposes. The baseline runner reads one configured experiment (including cached or newly collected coverage); the experiment engine runs the fixed comparison grid over the three prepared bugs and writes the presentation CSVs.</p>
+    </section>
+
+    <section class="doc-section" data-title="Information retrieval formulas">
+      <div class="eyebrow">04 — File retrieval</div>
+      <h2>All information-retrieval formulas used by the project</h2>
+      <table>
+        <caption>Table: Information-retrieval models and formula construction</caption>
+        <thead><tr><th>Model</th><th>Formula or construction</th><th>One-line explanation and where used</th></tr></thead>
+        <tbody>
+          <tr><td>Raw-TF cosine</td><td>\(\displaystyle \operatorname{cos}(q,d)=\frac{\sum_t q_t d_t}{\lVert q\rVert_2\lVert d\rVert_2}\)</td><td>Explanation: compares the direction of report and file word-count vectors.<span class="formula-use"><b>Where used:</b> baseline file ranking and the raw-TF configuration in the IR comparison grid.</span></td></tr>
+          <tr><td>Authors' TF-IDF</td><td><code>TF(raw) × IDF=1+ln(N/df)</code>, fitted over files plus query, cosine</td><td>Explanation: gives rarer terms more weight using the authors' repository-style weighting.<span class="formula-use"><b>Where used:</b> the <code>tfidf_authors</code> file-ranking configuration.</span></td></tr>
+          <tr><td>Smoothed TF-IDF</td><td>\(\displaystyle \operatorname{idf}(t)=\ln\left(\frac{N+1}{df(t)+1}\right)+1\)</td><td>Explanation: multiplies raw term frequency by an IDF value that remains defined for rare terms.<span class="formula-use"><b>Where used:</b> the <code>tfidf_smooth</code> file-ranking configuration.</span></td></tr>
+          <tr><td>Sublinear TF-IDF</td><td>\(\displaystyle tf_{sub}(t,d)=1+\ln tf(t,d)\)</td><td>Explanation: reduces the extra influence of repeated terms before applying IDF and cosine similarity.<span class="formula-use"><b>Where used:</b> the <code>tfidf_sublinear</code> configurations in the file-ranking and ISBL/hybrid experiment grids.</span></td></tr>
+          <tr><td>BM25</td><td>\(\displaystyle \sum_t qtf(t)\,\operatorname{idf}_B(t)\frac{tf(t,d)(k_1+1)}{tf(t,d)+k_1(1-b+b\,dl/avgdl)}\)</td><td>Explanation: balances query frequency, term rarity, and document length (\(k_1=1.2,\ b=.75\)).<span class="formula-use"><b>Where used:</b> the <code>bm25</code> file-ranking, ISBL, and hybrid configurations.</span></td></tr>
+          <tr><td>rVSM / BugLocator text component</td><td><code>g(length) × cos(log-TF×ln(N/df))</code></td><td>Explanation: combines log-weighted cosine similarity with a file-length factor; similar-bug history is not implemented.<span class="formula-use"><b>Where used:</b> the <code>rvsm</code> file-ranking, ISBL, and hybrid configurations.</span></td></tr>
+          <tr><td>Dirichlet LM</td><td>\(\displaystyle \sum_t \ln\frac{tf(t,d)+\mu\,p(t|C)}{dl+\mu},\quad \mu=2000\)</td><td>Explanation: estimates how likely the bug-report terms are under a file, with collection-level smoothing.<span class="formula-use"><b>Where used:</b> the <code>lm_dirichlet</code> file-ranking configuration.</span></td></tr>
+          <tr><td>LSI</td><td>Sublinear TF-IDF → truncated SVD up to 50 directions → cosine</td><td>Explanation: compares query and files in a reduced space that can capture related terms.<span class="formula-use"><b>Where used:</b> the <code>lsi</code> file-ranking configuration.</span></td></tr>
+          <tr><td>Jaccard</td><td>\(\displaystyle J(Q,D)=\frac{|Q\cap D|}{|Q\cup D|}\)</td><td>Explanation: measures the overlap of distinct report terms and file terms.<span class="formula-use"><b>Where used:</b> the <code>jaccard</code> file-ranking configuration.</span></td></tr>
+          <tr><td>Containment</td><td>\(\displaystyle C(Q,D)=\frac{|Q\cap D|}{|Q|}\)</td><td>Explanation: measures what fraction of distinct report terms appear in a file.<span class="formula-use"><b>Where used:</b> the <code>containment</code> file-ranking configuration.</span></td></tr>
+          <tr><td>BLUiR-style</td><td>Sum of BM25 values across report and source fields</td><td>Explanation: matches report fields against class, method, identifier, and comment fields.<span class="formula-use"><b>Where used:</b> the <code>bluir</code> file-ranking, ISBL, and hybrid configurations.</span></td></tr>
+          <tr><td>Reciprocal-rank fusion</td><td>\(\displaystyle RRF(d)=\sum_m \frac{1}{60+\operatorname{rank}_m(d)}\)</td><td>Explanation: combines model rankings without comparing their incompatible raw score scales.<span class="formula-use"><b>Where used:</b> the <code>rrf</code> combination of BM25, sublinear TF-IDF, and rVSM in file-ranking and hybrid experiments.</span></td></tr>
+        </tbody>
+      </table>
+      <h3>Preprocessing options</h3>
+      <div class="box blue">
+        <p><b>Three basic retrieval ideas:</b> the bug report is the <i>query</i>, each Java file is a <i>document</i>, and each distinct word or identifier is a <i>term</i>. Term frequency (TF) counts a term inside one document; document frequency (DF) counts how many files contain it; inverse document frequency (IDF) gives rarer terms more weight. A similarity score orders files by how well their terms match the query—it is a search-priority signal, not proof of defect causality.</p>
+      </div>
+      <p><code>remove_keywords</code>, <code>remove_stopwords</code>, <code>drop_license</code>, <code>split_identifiers</code>, <code>stem</code>, <code>clean_query</code> and <code>name_match_weight</code>. Identifier splitting turns <code>createNumber</code> into <code>create number</code>; stemming merges grammatical variants. Stack cleaning removes lines beginning in <code>at</code>, <code>... N more</code> or <code>Caused by:</code>.</p>
+      <h3>Cosine-audit result</h3>
+      <table>
+        <caption>Table: Cosine numerical agreement and ranking equivalence</caption>
+        <thead><tr><th>Bug</th><th>Maximum difference vs scikit-learn</th><th>Maximum difference vs SciPy</th><th>Ranking identical?</th></tr></thead>
+        <tbody><tr><td>Lang-1</td><td>4.16×10⁻¹⁷</td><td>8.33×10⁻¹⁷</td><td>Yes</td></tr><tr><td>Lang-2</td><td>5.55×10⁻¹⁷</td><td>1.11×10⁻¹⁶</td><td>Yes</td></tr><tr><td>Lang-3</td><td>5.55×10⁻¹⁷</td><td>8.33×10⁻¹⁷</td><td>Yes</td></tr></tbody>
+      </table>
+      <p>The arithmetic is verified. The retrieval weakness is term weighting and noisy query text, not a cosine implementation error.</p>
+      <p><a href="../results/experiments/cosine_audit_correctness.csv" target="_blank">Cosine correctness CSV</a> · <a href="../results/experiments/cosine_audit_properties.csv" target="_blank">Cosine properties CSV</a> · <a href="../results/experiments/cosine_audit_why.csv" target="_blank">Term-contribution audit CSV</a></p>
+    </section>
+
+    <section class="doc-section" data-title="Spectrum formulas">
+      <div class="eyebrow">05 — Line suspiciousness</div>
+      <h2>Spectrum formulas and coverage counts</h2>
+      <div class="grid-2">
+        <div>
+          <p><code>ef</code> = failing tests that execute the line; <code>ep</code> = passing tests that execute it.</p>
+          <p><code>nf</code> = failing tests that skip the line; <code>np</code> = passing tests that skip it.</p>
+        </div>
+        <div class="box blue">
+          <p><b>Lang-1 reduced example:</b> six tied lines have <code>(ef,ep,nf,np)=(1,3,0,166)</code>. Ochiai = 0.500 and DStar = 0.333. Three of the six are answer-key lines.</p>
+        </div>
+      </div>
+        <p class="formula-caption"><b>Counts explained:</b> \(ef\) and \(ep\) show whether failing and passing tests execute the line; \(nf\) and \(np\) show whether they skip it.</p>
+      <table>
+        <caption>Table: Eleven spectrum suspiciousness formulas and their purpose</caption>
+        <thead><tr><th>Formula</th><th>Exact implementation</th><th>One-line explanation and where used</th></tr></thead>
+        <tbody>
+          <tr><td>Ochiai</td><td>\(\displaystyle O=\frac{ef}{\sqrt{(ef+nf)(ef+ep)}}\)</td><td>Explanation: measures overlap between lines executed by failing tests and lines executed at all.<span class="formula-use"><b>Where used:</b> the SFL-only baseline, all ISBL cutoff runs, and the hybrid baseline/comparisons.</span></td></tr>
+          <tr><td>DStar\(^{n}\) / DStar3</td><td>\(\displaystyle D^{*n}=\frac{ef^n}{ep+nf}\), \(n=2\) or \(3\)</td><td>Explanation: squares or cubes failing executions while penalizing passing executions and failing tests that skipped the line.<span class="formula-use"><b>Where used:</b> DStar\(^2\) in ISBL/hybrid runs; DStar\(^2\) and DStar\(^3\) in the SFL-only comparison.</span></td></tr>
+          <tr><td>Tarantula</td><td>\(\displaystyle \frac{f}{f+p},\ f=\frac{ef}{ef+nf},\ p=\frac{ep}{ep+np}\)</td><td>Explanation: compares the shares of failing and passing tests that execute a line.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid.</span></td></tr>
+          <tr><td>Jaccard</td><td>\(\displaystyle J=\frac{ef}{ef+nf+ep}\)</td><td>Explanation: rewards failing executions and discounts passing executions or failing tests that skipped the line.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid.</span></td></tr>
+          <tr><td>Sørensen-Dice</td><td>\(\displaystyle SD=\frac{2ef}{2ef+nf+ep}\)</td><td>Explanation: like Jaccard, but gives the failing-execution overlap twice the weight.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid.</span></td></tr>
+          <tr><td>Kulczynski2</td><td>\(\displaystyle \frac12\left[\frac{ef}{ef+nf}+\frac{ef}{ef+ep}\right]\)</td><td>Explanation: averages failing-test coverage rate and the share of line executions that came from failures.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid.</span></td></tr>
+          <tr><td>Op2</td><td>\(\displaystyle ef-\frac{ep}{ep+np+1}\)</td><td>Explanation: starts with failing executions and subtracts a bounded penalty for passing executions.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid.</span></td></tr>
+          <tr><td>Barinel</td><td>\(\displaystyle 1-\frac{ep}{ep+ef}\), if \(ep+ef>0\)</td><td>Explanation: scores the fraction of line executions contributed by failing tests.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid.</span></td></tr>
+          <tr><td>Wong2</td><td>\(\displaystyle ef-ep\)</td><td>Explanation: subtracts passing executions directly from failing executions.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid, including the reported low-performing Wong2 result.</span></td></tr>
+          <tr><td>Ochiai2</td><td>\(\displaystyle O_2=\frac{ef\,np}{\sqrt{(ef+ep)(nf+np)(ef+nf)(ep+np)}}\)</td><td>Explanation: uses all four counts and favors lines executed by failures but skipped by passing tests.<span class="formula-use"><b>Where used:</b> the SFL-only formula comparison grid.</span></td></tr>
+        </tbody>
+      </table>
+      <p><b>Why formulas leave ties:</b> if two lines have identical four counts, every deterministic formula based on those counts produces the same score. Extra source text or test structure is required to separate the lines.</p>
+      <p><b>How to read the values:</b> each formula produces a score for one executable line; lines are sorted from higher score (more suspicious) to lower score. The formula helpers return zero when a formula's denominator would be zero, except DStar, which returns positive infinity when \(ef&gt;0\) and its denominator is zero. The hybrid helper replaces positive infinity with a finite value above the largest finite score before forming its ranking keys.</p>
+      <h3>Worked example: why six Lang-1 lines tie</h3>
+      <p>For each of the six lines, one failing test and three passing tests execute it, while no failing test and 166 passing tests skip it. The numbers are identical, so a coverage-only formula cannot tell these source lines apart:</p>
+      <div class="math-block">\[
+        (ef,ep,nf,np)=(1,3,0,166),\qquad
+        Ochiai=\frac{1}{\sqrt{(1+0)(1+3)}}=0.5,\qquad
+        DStar^2=\frac{1^2}{3+0}\approx0.333
+      \]</div>
+      <p><b>Explanation:</b> for intuition, Tarantula is about \(0.983\): all failing tests execute the line, while only \(3/169\) passing tests do. Every tied line receives the same value.<span class="formula-use"><b>Where used:</b> this is a worked Lang-1 spectrum example; statement-text hybrid scoring subsequently orders lines within this coverage tie.</span></p>
+    </section>
+
+    <section class="doc-section" data-title="Hybrid formula">
+      <div class="eyebrow">06 — Hybrid ranking extension</div>
+      <h2>The hybrid score uses new evidence only inside exact ties</h2>
+      <p><b>File score F:</b> min-max normalize the IR score of the statement's file across all ranked files.<span class="formula-use"><b>Where used:</b> copied onto each covered statement as a secondary tie-break key or hybrid input.</span></p>
+      <p><b>Statement text score T:</b> for every distinct source-line token shared with the report, add <code>idf(t)=ln(1+N/df(t))</code>, where N is the project-file count.</p>
+      <div class="math-block">\[
+        T(s)=\sum_{t\in(\operatorname{tokens}(line_s)\cap\operatorname{tokens}(report))}
+        \ln\left(1+\frac{N}{df(t)}\right)
+      \]</div>
+      <p class="formula-caption"><b>Explanation:</b> \(T(s)\) adds rare matching words found on source line \(s\). A token appearing in fewer files receives a larger weight.<span class="formula-use"><b>Where used:</b> computed by <code>hybrid.statement_text_scores()</code> and used to break SFL ties or as an input to blended modes.</span></p>
+      <table>
+        <caption>Table: Hybrid ranking modes and lexicographic or blended sort keys</caption>
+        <thead><tr><th>Hybrid mode</th><th>Sort key</th><th>One-line explanation and where used</th></tr></thead>
+        <tbody>
+          <tr><td><code>sfl</code></td><td>\((S)\)</td><td>Explanation: orders statements by spectrum suspiciousness alone.<span class="formula-use"><b>Where used:</b> plain SFL and ISBL control results.</span></td></tr>
+          <tr><td><code>tie_file</code></td><td>\((S,F)\)</td><td>Explanation: uses file relevance only when two statements have equal SFL scores.<span class="formula-use"><b>Where used:</b> one exact-tie variant in the hybrid comparison grid.</span></td></tr>
+          <tr><td><code>tie_text</code></td><td>\((S,T)\)</td><td>Explanation: uses report-to-line text relevance only inside an SFL tie.<span class="formula-use"><b>Where used:</b> one exact-tie variant in the hybrid comparison grid.</span></td></tr>
+          <tr><td><code>tie_file_text</code></td><td>\((S,F,T)\)</td><td>Explanation: checks file relevance and then line-text relevance within an SFL tie.<span class="formula-use"><b>Where used:</b> one exact-tie variant in the hybrid comparison grid.</span></td></tr>
+          <tr><td><code>linear</code></td><td>\(\displaystyle (1-a-b)\widetilde S+a\widetilde F+b\widetilde T\)</td><td>Explanation: blends normalized spectrum, file, and text scores, so it can reorder unequal SFL scores.<span class="formula-use"><b>Where used:</b> exploratory weighted hybrid variants in the comparison grid.</span></td></tr>
+          <tr><td><code>mult</code></td><td>\(\displaystyle \widetilde S(1+a\widetilde F)\)</td><td>Explanation: scales the normalized spectrum score by the normalized file score.<span class="formula-use"><b>Where used:</b> an exploratory multiplicative hybrid variant in the comparison grid.</span></td></tr>
+        </tbody>
+      </table>
+      <div class="math-block">\[
+        \widetilde x=\frac{x-\min(x)}{\max(x)-\min(x)}
+      \]</div>
+      <p><b>Explanation:</b> min-max scaling maps each set of scores to \([0,1]\); when all values are equal, the implementation returns 0. <span class="formula-use"><b>Where used:</b> only the linear and multiplicative modes normalize SFL, file, and text scores; DStar infinity is converted to a finite value in the hybrid helper.</span></p>
+      <h3>Metrics used to evaluate the hybrid ranking</h3>
+      <div class="hybrid-metrics">
+        <div class="hybrid-metric">
+          <strong>Best / average / worst first-hit rank</strong>
+          <p>For a tie group occupying positions \(a,\ldots,b\), report \(a\), \((a+b)/2\), and \(b\). On Lang-1 the plain Ochiai range is <b>1 / 3.5 / 6</b>; exact-tie text ranking narrows it to <b>2 / 2 / 2</b>.<span class="formula-use"><b>Where used:</b> <code>ranking.rank_statements()</code> and the per-bug tie-sensitivity tables.</span></p>
+        </div>
+        <div class="hybrid-metric">
+          <strong>Worst-tie MRR</strong>
+          <div>\(\displaystyle MRR_w=\frac13\left(\frac1r_{Lang1}+\frac1r_{Lang2}+\frac1r_{Lang3}\right)\)</div>
+          <p>Explanation: averages reciprocal worst-tie first-hit ranks; missing buggy files contribute 0.<span class="formula-use"><b>Where used:</b> the worst-tie MRR column in the statement-level summary and the reported hybrid comparison (0.206 to 0.417).</span></p>
+        </div>
+        <div class="hybrid-metric">
+          <strong>Average-tie MRR and MAP</strong>
+          <p>Average-tie MRR changes from \(0.302\) to \(0.444\). MAP changes from \(0.327\) to approximately \(0.376\)-\(0.377\), because it considers all answer-key lines rather than only the first hit.</p>
+        </div>
+        <div class="hybrid-metric">
+          <strong>nDCG@10, recall@10 and EXAM</strong>
+          <p>nDCG@10 rises from \(0.443\) to \(0.492\). Recall@10 remains \(0.75\). Mean EXAM falls from \(0.719\%\) to \(0.617\%\), and mean wasted effort falls from \(2.333\) to \(1.333\) positions.</p>
+        </div>
+        <div class="hybrid-metric">
+          <strong>Wins / draws / losses (W/D/L)</strong>
+          <p>Compared with plain Ochiai for the average-tie first-hit rank, the hybrid gives <b>2 wins, 1 draw, 0 losses</b> across the three bugs. This is a small-sample result, not a significance claim.</p>
+        </div>
+      </div>
+      <p class="box amber"><b>Presentation caveat:</b> tie_text and tie_file_text are project extensions. The tested variants were compared on the same three bugs, so they are hypotheses for held-out validation rather than proven general ranking models.</p>
+    </section>
+
+    <section class="doc-section" data-title="Metric formulas and explanations">
+      <div class="eyebrow">07 — Every metric family</div>
+      <h2>Ranking and inspection metrics</h2>
+      <div class="metric-flow">
+        <div class="math-block">\[
+          r_b=\min_{s\in answerKey(b)} rank(s)
+        \]</div>
+        <p><b>Explanation:</b> bug rank \(r_b\) is the lowest rank of any answer-key line; if none remain after filtering, it is missing.<span class="formula-use"><b>Where used:</b> <code>metrics.bug_rank()</code> computes the first-hit rank used by TOP@N and MRR.</span></p>
+
+        <div class="math-block">\[
+          TOP@N=\sum_{b=1}^{B}\mathbf 1[r_b\le N]
+        \]</div>
+        <p><b>Explanation:</b> TOP@N counts bugs whose first answer-key line appears in the first N positions; it is a count, not a percentage.<span class="formula-use"><b>Where used:</b> <code>metrics.top_n()</code> produces the TOP@1/3/5/10 result columns.</span></p>
+
+        <div class="math-block">\[
+          MRR=\frac1B\sum_{b=1}^{B}\frac1{r_b},
+          \qquad r_b\text{ missing}\Rightarrow \frac1{r_b}=0
+        \]</div>
+        <p><b>Explanation:</b> MRR rewards earlier first hits; a missing item contributes zero.<span class="formula-use"><b>Where used:</b> <code>metrics.mrr()</code> and experiment summaries compare file- and statement-level rankings.</span></p>
+
+        <div class="math-block">\[
+          AP=\frac1R\sum_{i=1}^{R}\frac{i}{r_i},
+          \qquad MAP=\frac1B\sum_{b=1}^{B}AP_b
+        \]</div>
+        <p><b>Explanation:</b> AP rewards finding answer-key items early; MAP averages AP across bugs, keeping missing items in the full answer-key denominator.<span class="formula-use"><b>Where used:</b> <code>metrics.ap_over_all_relevant()</code> feeds file-level and statement-level result summaries.</span></p>
+
+        <div class="math-block">\[
+          nDCG@K=
+          \frac{\displaystyle\sum_{r_i\le K}\frac1{\log_2(r_i+1)}}
+          {\displaystyle\sum_{j=1}^{\min(R,K)}\frac1{\log_2(j+1)}}
+        \]</div>
+        <p><b>Explanation:</b> nDCG@K compares actual and ideal rankings, giving more credit to relevant items near rank 1.<span class="formula-use"><b>Where used:</b> <code>metrics.ndcg_at_k()</code> produces the file-level and statement-level nDCG results, including nDCG@10.</span></p>
+
+        <div class="math-block">\[
+          Recall@K=\frac{|AnswerKey\cap TopK|}{|AnswerKey|},
+          \qquad
+          Precision@K=\frac{|AnswerKey\cap TopK|}{K}
+        \]</div>
+        <p><b>Explanation:</b> recall is the fraction of all answer-key items found; precision is the relevant fraction of the top-K list.<span class="formula-use"><b>Where used:</b> <code>metrics.recall_at_k()</code> is reported for file and statement results; <code>precision_at_k()</code> is available as a helper but is not emphasized in the result tables.</span></p>
+
+        <div class="math-block">\[
+          EXAM=\frac{r_1}{S},
+          \qquad
+          WastedEffort=r_1-1
+        \]</div>
+        <p><b>Explanation:</b> EXAM estimates the share of the list inspected before the first answer-key line; wasted effort counts preceding irrelevant lines.<span class="formula-use"><b>Where used:</b> localization diagnostics and statement-level summaries report EXAM and wasted effort; both are lower-is-better.</span></p>
+      </div>
+      <h3>File-ranking and filter-safety metrics</h3>
+      <div class="metric-flow">
+        <div class="math-block">\[
+          Recall_{file@k}=
+          \begin{cases}
+          1,& buggyFile\in Topk\%\\
+          0,& otherwise
+          \end{cases}
+        \]</div>
+        <p><b>Explanation:</b> file recall@k% is 1 if a buggy file survives in the top-k shortlist and 0 otherwise.<span class="formula-use"><b>Where used:</b> the experiment engine reports file recall at each cutoff; <code>metrics.file_recall_at_k()</code> provides the binary survival check.</span></p>
+
+        <div class="math-block">\[
+          Cut_{statements}=1-\frac{S_{retained}}{S_{full}}
+        \]</div>
+        <p><b>Explanation:</b> statement cut is the fraction of covered statements removed by the file filter; interpret it together with the number of lost bugs.<span class="formula-use"><b>Where used:</b> <code>run_experiments.py</code> calculates the cutoff values in <code>false_exclusion.csv</code>.</span></p>
+
+        <div class="math-block">\[
+          \operatorname{Outcome}_b=
+          \begin{cases}
+            \text{Win},& r_{A,b}&lt;r_{B,b}\\
+            \text{Draw},& r_{A,b}=r_{B,b}\\
+            \text{Loss},& r_{A,b}&gt;r_{B,b}
+          \end{cases}
+        \]</div>
+        <p class="formula-caption"><b>Explanation:</b> for each bug, compare candidate rank \(r_{A,b}\) with plain Ochiai rank \(r_{B,b}\); lower is better.<span class="formula-use"><b>Where used:</b> <code>metrics.win_draw_lose()</code> assigns the per-bug result in the hybrid comparison.</span></p>
+        <div class="math-block">\[
+          \begin{aligned}
+            W&=\sum_{b=1}^{B}\mathbf{1}[\operatorname{Outcome}_b=\text{Win}]\\
+            D&=\sum_{b=1}^{B}\mathbf{1}[\operatorname{Outcome}_b=\text{Draw}]\\
+            L&=\sum_{b=1}^{B}\mathbf{1}[\operatorname{Outcome}_b=\text{Loss}]
+          \end{aligned}
+        \]</div>
+        <p><b>Explanation:</b> count each per-bug outcome to form W/D/L totals; missing ranks are represented as \(\infty\).<span class="formula-use"><b>Where used:</b> <code>engine.summarize_statements()</code> writes the W/D/L comparison against plain Ochiai to the statement summary.</span></p>
+      </div>
+
+      <h3>Tie and ranking diagnostics</h3>
+      <div class="metric-flow">
+        <div class="math-block">\[
+          best=a,\qquad average=\frac{a+b}{2},\qquad worst=b
+        \]</div>
+        <p><b>Explanation:</b> for a tie group spanning positions \(a\) through \(b\), best, average, and worst ranks are \(a\), \((a+b)/2\), and \(b\).<span class="formula-use"><b>Where used:</b> <code>ranking.rank_statements()</code> assigns these tie variants for per-bug ranks and MRR.</span></p>
+
+        <div class="math-block">\[
+          \bar r=\frac1m\sum_{j=1}^{m}r_j,\qquad
+          median(r)=\text{middle value of }(r_1,\ldots,r_m)
+        \]</div>
+        <p><b>Explanation:</b> mean rank averages located answer-key positions; median rank is less affected by a distant item.<span class="formula-use"><b>Where used:</b> <code>diagnostics.localization_diagnostics()</code> records these as descriptive statement-ranking diagnostics.</span></p>
+
+        <div class="math-block">\[
+          CI_{95}=[q_{0.025},q_{0.975}],
+          \qquad
+          mean_i=\frac1B\sum_{b=1}^{B}MRR_b^{(i)}
+        \]</div>
+        <p><b>Explanation:</b> the seeded 2,000-resample percentile bootstrap estimates an interval for mean MRR; three bugs are too few for a strong general claim.<span class="formula-use"><b>Where used:</b> <code>metrics.bootstrap_ci()</code> adds lower and upper confidence limits to statement-level summary rows.</span></p>
+
+        <div class="math-block">\[
+          W=\sum_{d_i>0}R_i,\qquad
+          p=P(|W|\ge |W_{observed}|)
+        \]</div>
+        <p><b>Explanation:</b> the two-sided paired signed-rank test checks rank differences; missing ranks become a large sentinel, and identical pairs return no test.<span class="formula-use"><b>Where used:</b> <code>metrics.wilcoxon_p()</code> supplies an exploratory paired comparison in the statement summary.</span></p>
+
+        <div class="math-block">\[
+          \begin{aligned}
+          Density&=\frac{\#\{executed\ test-line\ pairs\}}{T\times S}\\
+          Statements/Test&=\frac{\#\{executed\ pairs\}}{T}\\
+          Tests/Statement&=\frac{\#\{executed\ pairs\}}{S}
+          \end{aligned}
+        \]</div>
+        <p><b>Explanation:</b> density measures how many test-line cells show execution; the averages describe coverage per test and per line.<span class="formula-use"><b>Where used:</b> <code>diagnostics.spectrum_diagnostics()</code> adds these coverage-shape values to per-run diagnostics.</span></p>
+
+        <div class="math-block">\[
+          DistinctScores=\left|\{score(s):s\in Spectrum\}\right|
+        \]</div>
+        <p><b>Explanation:</b> counts the distinct SFL scores; fewer values can mean more lines are tied.<span class="formula-use"><b>Where used:</b> localization diagnostics report this beside rank and tie-group information.</span></p>
+
+        <div class="math-block">\[
+          TieGroup(s)=\{l:l\in Spectrum,\ score(l)=score(s)\},
+          \qquad
+          BuggyInTie=|TieGroup(s)\cap AnswerKey|
+        \]</div>
+        <p><b>Explanation:</b> tie-group size counts lines sharing a buggy line's score; buggy-in-tie counts answer-key lines in that group.<span class="formula-use"><b>Where used:</b> localization diagnostics explain whether poor ranks come from large SFL ties.</span></p>
+      </div>
+
+      <h3>IR and uncertainty diagnostics</h3>
+      <div class="metric-flow">
+        <div class="math-block">\[
+          H=-\sum_{i:s_i>0}p_i\log_2p_i,
+          \qquad p_i=\frac{s_i}{\sum_j s_j}
+        \]</div>
+        <p><b>Explanation:</b> entropy rises when positive IR scores are spread more evenly across files, which can indicate weak separation.<span class="formula-use"><b>Where used:</b> <code>diagnostics.ir_diagnostics()</code> records score entropy as a file-ranking uncertainty diagnostic.</span></p>
+
+        <div class="math-block">\[
+          Gap_{cosine}=cos_1-cos_2
+        \]</div>
+        <p><b>Explanation:</b> subtracts the second-highest cosine from the highest; a small gap means the top file is weakly separated.<span class="formula-use"><b>Where used:</b> <code>diagnostics.ir_diagnostics()</code> records the gap for each file-ranking run.</span></p>
+
+        <div class="math-block">\[
+          Percentile_{raw}=\frac{rank_{buggy}}{N},
+          \qquad
+          rank_{buggy}\in[1,N]
+        \]</div>
+        <p><b>Explanation:</b> divides the buggy-file rank by the number of files; this approximates the smallest cutoff that retains the file.<span class="formula-use"><b>Where used:</b> <code>diagnostics.ir_diagnostics()</code> records the percentile and rank for file-retrieval diagnostics.</span></p>
+      </div>
+    </section>
+
+    <section class="doc-section" data-title="Results by bug">
+      <div class="eyebrow">08 — JSON baseline results</div>
+      <h2>Actual raw baseline values at 50% raw-TF cutoff</h2>
+      <table>
+        <caption>Table: 50% raw-TF baseline — JSON-reported per-bug result</caption>
+        <thead><tr><th>Bug</th><th>Full / filtered lines</th><th>Full / filtered tests</th><th>Buggy-file raw-TF rank</th><th>Worst/avg/best rank</th><th>MRR worst</th><th>TOP@5 worst</th></tr></thead>
+        <tbody>
+          <tr><td>Lang-1</td><td>981 / 913</td><td>173 / 170</td><td>8 / 108</td><td>6 / 3.5 / 1</td><td>0.1667</td><td>0</td></tr>
+          <tr><td>Lang-2</td><td>208 / 208</td><td>14 / 14</td><td>23 / 108</td><td>4 / 3 / 2</td><td>0.2500</td><td>1</td></tr>
+          <tr><td>Lang-3</td><td>979 / 909</td><td>172 / 169</td><td>16 / 108</td><td>5 / 3.5 / 2</td><td>0.2000</td><td>1</td></tr>
+        </tbody>
+      </table>
+      <p class="small"><b>Table explanation:</b> “filtered” values are the spectrum after the 50% file shortlist. Lower line ranks and higher MRR are better. The rank `6/3.5/1` means worst/average/best possible positions.</p>
+      <h3>Per-bug interpretation</h3>
+      <ul>
+        <li><b>Lang-1.</b> Three answer-key lines and three non-buggy lines tie at Ochiai 0.500. The worst, average and best ranks are 6, 3.5 and 1. File filtering removes 68 of 981 lines but does not alter this tie.</li>
+        <li><b>Lang-2.</b> The answer key is proxy line 92. It sits in a 3-line Ochiai tie. The average rank is 3 and the worst rank is 4. The raw-TF buggy-file rank is poor at 23.</li>
+        <li><b>Lang-3.</b> The four answer-key lines have different later ranks, while the best answer-key line is rank 5. The raw-TF buggy-file rank is 16 and 70 lines are removed at 50%.</li>
+      </ul>
+      <p><b>Lang-1 full-suite check:</b> 2,273 cleaned tests cover 11,102 full lines and the 50% filter keeps 6,593 lines. The worst/average/best rank remains 6/3.5/1 under Ochiai and DStar. The 40.6% list reduction is not accompanied by statement-rank improvement.</p>
+      <p><a href="../results/raw/Lang-1_tf_relevant_k0.5.json" target="_blank">Lang-1 relevant JSON</a> · <a href="../results/raw/Lang-1_tf_all_k0.5.json" target="_blank">Lang-1 full-suite JSON</a> · <a href="../results/raw/Lang-2_tf_relevant_k0.5.json" target="_blank">Lang-2 JSON</a> · <a href="../results/raw/Lang-3_tf_relevant_k0.5.json" target="_blank">Lang-3 JSON</a></p>
+    </section>
+
+    <section class="doc-section" data-title="IR and false-exclusion results">
+      <div class="eyebrow">09 — File-level evidence</div>
+      <h2>Weighted retrieval improves both rank and cutoff safety</h2>
+      <table>
+        <caption>Table: Selected file-ranking and false-exclusion results from the experiment CSV</caption>
+        <thead><tr><th>IR configuration</th><th>Buggy-file rank Lang-1/2/3</th><th>Top@1</th><th>MRR</th><th>10% cutoff lost bugs</th><th>Mean 10% statement cut</th></tr></thead>
+        <tbody>
+          <tr><td>Raw TF / paper</td><td>8 / 23 / 16</td><td>0</td><td>0.077</td><td>2 / 3</td><td>61.9%</td></tr>
+          <tr><td>Clean raw TF</td><td>8 / 10 / 16</td><td>0</td><td>0.096</td><td>1 / 3</td><td>47.0%</td></tr>
+          <tr><td>Sublinear TF-IDF / paper</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td><td>0 / 3</td><td>46.9%</td></tr>
+          <tr><td>Sublinear TF-IDF / split+stem</td><td>1 / 5 / 1</td><td>2</td><td>0.733</td><td>0 / 3</td><td>45.9%</td></tr>
+          <tr><td>Sublinear TF-IDF / clean</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td><td>0 / 3</td><td>45.9%</td></tr>
+          <tr><td>rVSM / paper</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td><td>0 / 3</td><td>43.6%</td></tr>
+        </tbody>
+      </table>
+      <p class="small"><b>Table explanation:</b> the rank is the first-file position for each bug. Top@1 counts bugs whose buggy file is rank 1. MRR rewards earlier file hits; lost bugs and statement cut are read together at the smallest cutoff.</p>
+      <h3>Complete CSV: buggy-file rank by IR configuration</h3>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: All 23 IR configurations — Lang-1/Lang-2/Lang-3 rank, Top@1 and MRR</caption>
+        <thead><tr><th>IR configuration</th><th>Rank 1/2/3</th><th>Top@1</th><th>MRR</th></tr></thead>
+        <tbody>
+          <tr><td>tf_cosine | paper</td><td>8 / 23 / 16</td><td>0</td><td>0.077</td></tr>
+          <tr><td>tfidf_authors | none</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>tfidf_smooth | paper</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>tfidf_sublinear | paper</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>tfidf_sublinear | split+stem</td><td>1 / 5 / 1</td><td>2</td><td>0.733</td></tr>
+          <tr><td>bm25 | paper</td><td>1 / 8 / 1</td><td>2</td><td>0.708</td></tr>
+          <tr><td>bm25 | split+stem</td><td>1 / 26 / 1</td><td>2</td><td>0.679</td></tr>
+          <tr><td>rvsm | paper</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>rvsm | split+stem</td><td>1 / 2 / 1</td><td>2</td><td>0.833</td></tr>
+          <tr><td>lm_dirichlet | split+stem</td><td>1 / 35 / 1</td><td>2</td><td>0.676</td></tr>
+          <tr><td>lsi | split+stem</td><td>1 / 5 / 1</td><td>2</td><td>0.733</td></tr>
+          <tr><td>jaccard | paper</td><td>1 / 5 / 2</td><td>1</td><td>0.567</td></tr>
+          <tr><td>containment | paper</td><td>1 / 8 / 2</td><td>1</td><td>0.542</td></tr>
+          <tr><td>bluir_like | split+stem</td><td>1 / 11 / 1</td><td>2</td><td>0.697</td></tr>
+          <tr><td>rrf(bm25,tfidf,rvsm) | split+stem</td><td>1 / 6 / 1</td><td>2</td><td>0.722</td></tr>
+          <tr><td>tfidf_sublinear | split+stem +name</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>bm25 | split+stem +name</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>tf_cosine | paper +clean</td><td>8 / 10 / 16</td><td>0</td><td>0.096</td></tr>
+          <tr><td>tfidf_sublinear | split+stem +clean</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>bm25 | split+stem +clean</td><td>1 / 9 / 1</td><td>2</td><td>0.704</td></tr>
+          <tr><td>rvsm | split+stem +clean</td><td>1 / 1 / 1</td><td>3</td><td>1.000</td></tr>
+          <tr><td>bluir_like | split+stem +clean</td><td>1 / 3 / 1</td><td>2</td><td>0.778</td></tr>
+          <tr><td>lm_dirichlet | split+stem +clean</td><td>1 / 5 / 1</td><td>2</td><td>0.733</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="small"><b>Result explanation:</b> eight configurations achieve rank 1/1/1. This is a strong file-level result, but it is an early-retrieval ceiling: the models still differ in the remaining ranking and in false exclusion.</p>
+      <h3>CSV evidence: false exclusion and statement removal</h3>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: False-exclusion and statement-cut comparison at 10/25/50% cutoffs</caption>
+        <thead><tr><th>IR configuration</th><th>k=10% lost/cut</th><th>k=25% lost/cut</th><th>k=50% lost/cut</th><th>Presentation meaning</th></tr></thead>
+        <tbody>
+          <tr><td><b>tf_cosine | paper</b></td><td><span class="tag red">2/3 lost</span> · 61.9%</td><td>0/3 · 19.0%</td><td>0/3 · 4.7%</td><td>Unsafe at 10%; bug filtering improves at larger cutoffs.</td></tr>
+          <tr><td><b>tf_cosine | paper +clean</b></td><td><span class="tag red">1/3 lost</span> · 47.0%</td><td>0/3 · 19.0%</td><td>0/3 · 4.7%</td><td>Removing Lang-2 trace noise recovers one bug.</td></tr>
+          <tr><td><b>tfidf_sublinear | paper</b></td><td>0/3 · 46.9%</td><td>0/3 · 23.7%</td><td>0/3 · 13.9%</td><td>Safe small cutoff with strong retrieval weighting.</td></tr>
+          <tr><td><b>tfidf_sublinear | split+stem+clean</b></td><td>0/3 · 45.9%</td><td>0/3 · 27.3%</td><td>0/3 · 15.1%</td><td>Safest weighted pattern at 10% while keeping useful preprocessing.</td></tr>
+          <tr><td><b>rVSM | paper</b></td><td>0/3 · 43.6%</td><td>0/3 · 27.0%</td><td>0/3 · 14.8%</td><td>BugLocator-style text similarity remains safe.</td></tr>
+          <tr><td><b>BM25 | split+stem</b></td><td><span class="tag amber">1/3 lost</span> · 47.7%</td><td>0/3 · 29.0%</td><td>0/3 · 10.9%</td><td>Preprocessing can hurt Lang-2 at a 10% cutoff.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <figure>
+        <img class="figure zoomable" src="images/fig_file_rank.png" alt="Buggy-file rank chart" data-caption="Buggy-file rank chart">
+        <figcaption><b>Figure: Buggy-file rank.</b> Each point is the position of the file containing the answer-key statements. Lower is better; rank 1 means the correct file is the first inspection choice.</figcaption>
+      </figure>
+      <h3>Lang-2 noise example</h3>
+      <p>In <code>cosine_audit_why.csv</code>, <code>JavaVersion.java</code> is raw-TF top-1 because <code>java</code> contributes 84%, <code>org</code> 7% and <code>apache</code> 6%. These terms come largely from the pasted stack trace. The file contributes 99.9% of its cosine from terms found in more than half of the 108 files. Cleaning and weighted retrieval correct much of this noise.</p>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: Cosine audit — wrong top file and term noise by bug</caption>
+        <thead><tr><th>Bug</th><th>Wrong top file</th><th>Buggy-file rank</th><th>Cosine</th><th>Terms from &gt;50% of files</th><th>Main noisy terms</th></tr></thead>
+        <tbody>
+          <tr><td>Lang-1</td><td>Validate.java</td><td>8</td><td>0.1198</td><td>43.8%</td><td>not 22%, string 18%</td></tr>
+          <tr><td>Lang-2</td><td>JavaVersion.java</td><td>23</td><td>0.1112</td><td>99.9%</td><td>java 84%, org 7%, apache 6%</td></tr>
+          <tr><td>Lang-3</td><td>MethodUtils.java</td><td>16</td><td>0.1376</td><td>55.1%</td><td>string 51%, numberutils 15%</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="small"><b>Audit explanation:</b> the first two columns identify the wrong file selected by raw TF. The final columns show that much of the similarity comes from generic or stack-trace words instead of defect-specific language.</p>
+    </section>
+
+    <section class="doc-section" data-title="Statement and hybrid results">
+      <div class="eyebrow">10 — Statement ranking</div>
+      <h2>SFL results, tie behavior and hybrid improvement</h2>
+      <table>
+        <caption>Table: Cross-bug statement-level comparison from statement_level_summary.csv</caption>
+        <thead><tr><th>Method</th><th>Average rank Lang-1/2/3</th><th>Worst MRR</th><th>Average MRR</th><th>MAP avg</th><th>nDCG@10 avg</th><th>EXAM avg</th></tr></thead>
+        <tbody>
+          <tr><td>Ochiai / DStar / nine similar formulas</td><td>3.5 / 3 / 3.5</td><td>0.206</td><td>0.302</td><td>0.327</td><td>0.443</td><td>0.719%</td></tr>
+          <tr><td>Wong2</td><td>628 / 201 / 631</td><td>0.003</td><td>0.003</td><td>0.004</td><td>0.000</td><td>75.03%</td></tr>
+          <tr><td>ISBL raw TF, k=.5, Ochiai</td><td>3.5 / 3 / 3.5</td><td>0.206</td><td>0.302</td><td>0.327</td><td>0.443</td><td>0.719%</td></tr>
+          <tr><td><b>tie_text / tie_file_text hybrid</b></td><td>2 / 3 / 2</td><td>0.417</td><td>0.444</td><td>0.376–0.377</td><td>0.492</td><td>0.617%</td></tr>
+        </tbody>
+      </table>
+      <h3>CSV evidence: aggregate statement metrics</h3>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: Aggregate statement-level TOP@N, MRR, MAP, nDCG, recall and wins / draws / losses</caption>
+        <thead><tr><th>Method</th><th>TOP@1/3/5 worst</th><th>TOP@1/3/5 average</th><th>MRR worst/avg</th><th>MAP</th><th>nDCG@10</th><th>Recall@10</th><th>W/D/L</th></tr></thead>
+        <tbody>
+          <tr><td><b>SFL: Ochiai</b></td><td>0 / 0 / 2</td><td>0 / 1 / 3</td><td>0.206 / 0.302</td><td>0.327</td><td>0.443</td><td>0.75</td><td>0 / 3 / 0</td></tr>
+          <tr><td><b>SFL: Wong2</b></td><td>0 / 0 / 0</td><td>0 / 0 / 0</td><td>0.003 / 0.003</td><td>0.004</td><td>0.000</td><td>0.00</td><td>0 / 0 / 3</td></tr>
+          <tr><td><b>ISBL raw-TF k=.5 + Ochiai</b></td><td>0 / 0 / 2</td><td>0 / 1 / 3</td><td>0.206 / 0.302</td><td>0.327</td><td>0.443</td><td>0.75</td><td>0 / 3 / 0</td></tr>
+          <tr><td><b>HYBRID tie_text k=.5 + Ochiai</b></td><td>0 / 2 / 3</td><td>0 / 3 / 3</td><td>0.417 / 0.444</td><td>0.376</td><td>0.492</td><td>0.75</td><td>2 / 1 / 0</td></tr>
+          <tr><td><b>HYBRID tie_file_text k=.5 + Ochiai</b></td><td>0 / 2 / 3</td><td>0 / 3 / 3</td><td>0.417 / 0.444</td><td>0.377</td><td>0.492</td><td>0.75</td><td>2 / 1 / 0</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="small"><b>Table explanation:</b> ranks are average-tie first-hit positions for Lang-1/Lang-2/Lang-3. MRR rewards earlier first hits; MAP considers every answer-key line; EXAM estimates the fraction inspected.</p>
+      <h3>Per-bug statement CSV: Ochiai versus hybrid text</h3>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: Per-bug rank, tie, MRR and MAP values</caption>
+        <thead><tr><th>Bug</th><th>Ochiai worst / avg / best</th><th>Hybrid tie-text worst / avg / best</th><th>Ochiai MRR avg</th><th>Hybrid MRR avg</th><th>Hybrid MAP</th></tr></thead>
+        <tbody>
+          <tr><td>Lang-1</td><td>6 / 3.5 / 1</td><td>2 / 2 / 2</td><td>0.286</td><td>0.500</td><td>0.3756</td></tr>
+          <tr><td>Lang-2</td><td>4 / 3.0 / 2</td><td>4 / 3.0 / 2</td><td>0.333</td><td>0.333</td><td>1.000</td></tr>
+          <tr><td>Lang-3</td><td>5 / 3.5 / 2</td><td>2 / 2.0 / 2</td><td>0.286</td><td>0.500</td><td>0.2500</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="small"><b>Per-bug explanation:</b> the hybrid improves Lang-1 and Lang-3 by narrowing exact ties. Lang-2 remains unchanged because its answer-key proxy line and tied statements have no useful shared report text.</p>
+      <h3>Concrete Lang-1 tie result</h3>
+      <table>
+        <caption>Table: Lang-1 lines in the six-way Ochiai tie, ordered by hybrid statement-text score</caption>
+        <thead><tr><th>Line</th><th>Role</th><th>Statement text score</th><th>Plain tie rank</th><th>Hybrid tie rank</th></tr></thead>
+        <tbody>
+          <tr><td>474</td><td>Non-buggy</td><td>7.007</td><td>Tied</td><td>1</td></tr>
+          <tr><td>467</td><td>Buggy</td><td>5.979</td><td>Tied</td><td>2</td></tr>
+          <tr><td>468</td><td>Buggy</td><td>4.771</td><td>Tied</td><td>4</td></tr>
+          <tr><td>471</td><td>Buggy</td><td>4.771</td><td>Tied</td><td>4</td></tr>
+        </tbody>
+      </table>
+      <p class="small"><b>Table explanation:</b> report and source text is strongest on line 474, although 474 is not in the patch. It therefore moves to rank 1. Buggy lines 467, 468 and 471 gain positions inside the tie, while all remaining tied candidates are also considered.</p>
+      <p>The plain worst/average/best Lang-1 ranks change from 6/3.5/1 to 2/2/2 under the exact-tie text ranking. This narrows uncertainty but can move the best-case rank lower because a non-buggy line becomes rank 1.</p>
+      <figure>
+        <img class="figure zoomable" src="images/fig_ties.png" alt="Tie-range comparison figure" data-caption="Tie-range comparison figure">
+        <figcaption><b>Figure: Tie uncertainty.</b> Wider bars show more dependence on arbitrary tie ordering. The hybrid text rank reduces uncertainty for Lang-1 and Lang-3 and leaves Lang-2 unchanged.</figcaption>
+      </figure>
+    </section>
+
+    <section class="doc-section" data-title="Console and workbook evidence">
+      <div class="eyebrow">11 — Reproducible outputs</div>
+      <h2>Use console and Excel evidence in the presentation</h2>
+      <h3>Console: false exclusion and file ranking</h3>
+      <figure>
+        <img class="console zoomable" src="images/console_false_exclusion_and_files.png" alt="Console output of false exclusion and file ranking" data-caption="Console false-exclusion and file ranking">
+        <figcaption><b>Console evidence: false exclusion and file ranking.</b> The first table reports lost bugs and statement cuts at 10/25/50%; the second reports rank, Top@N, MRR, MAP and nDCG. The string <code>8/23/16</code> is Lang-1/Lang-2/Lang-3.</figcaption>
+      </figure>
+      <h3>Console: statement and hybrid comparisons</h3>
+      <figure>
+        <img class="console zoomable" src="images/console_statement_and_hybrid.png" alt="Console output of statement and hybrid comparisons" data-caption="Console statement and hybrid comparisons">
+        <figcaption><b>Console evidence: statement and hybrid ranking.</b> <code>rank(avg)</code> is the average-tie first hit; <code>w</code> and <code>a</code> distinguish worst from average ties. MRR/MAP/nDCG/EXAM and wins / draws / losses (W/D/L) compare every method with plain Ochiai.</figcaption>
+      </figure>
+      <h3>Workbook sheets to show</h3>
+      <table>
+        <caption>Table: Workbook sheets and the result evidence they contain</caption>
+        <thead><tr><th>Workbook sheet</th><th>What to present</th></tr></thead>
+        <tbody>
+          <tr><td><code>IR_File_Summary</code></td><td>Ranks, Top@N, MRR/MAP/nDCG and 10/25/50% recall for 23 IR configurations.</td></tr>
+          <tr><td><code>False_Exclusion</code></td><td>At 10/25/50%, lost bugs and mean statement cut for every configuration.</td></tr>
+          <tr><td><code>Statement_Summary</code></td><td>Plain SFL, ISBL and hybrid aggregate metrics, win/draw/loss and tie sensitivity.</td></tr>
+          <tr><td><code>Hybrid_Modes</code></td><td>Exact key, linear and multiplicative hybrid variants.</td></tr>
+          <tr><td><code>Cosine_Audit</code></td><td>Numerical agreement and cosine properties; term-contribution noise.</td></tr>
+          <tr><td><code>Bugs</code></td><td>Bug type, answer key, test count, line count and source locations.</td></tr>
+          <tr><td><code>Metric_Guide</code></td><td>Formula and interpretation of the implemented metrics.</td></tr>
+        </tbody>
+      </table>
+      <h3>Data taken directly from the Excel workbook</h3>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: Key values consolidated directly from the workbook</caption>
+        <thead><tr><th>Workbook result</th><th>Lang-1</th><th>Lang-2</th><th>Lang-3</th><th>Cross-bug interpretation</th></tr></thead>
+        <tbody>
+          <tr><td><b>SFL Ochiai average rank</b></td><td>3.5</td><td>3.0</td><td>3.5</td><td>All first hits remain within the top few lines.</td></tr>
+          <tr><td><b>Hybrid tie_text average rank</b></td><td>2.0</td><td>3.0</td><td>2.0</td><td>Lang-1 and Lang-3 improve; Lang-2 is unchanged.</td></tr>
+          <tr><td><b>Raw-TF buggy file rank</b></td><td>8</td><td>23</td><td>16</td><td>Retrieval is weakest for Lang-2.</td></tr>
+          <tr><td><b>Sublinear TF-IDF buggy file rank</b></td><td>1</td><td>1</td><td>1</td><td>Strong first-file retrieval on all three bugs.</td></tr>
+          <tr><td><b>Ochiai mean EXAM</b></td><td colspan="3">0.719%</td><td>Developer checks less than 1% on average in this small sample.</td></tr>
+          <tr><td><b>Hybrid mean EXAM</b></td><td colspan="3">0.617%</td><td>Mean inspection fraction decreases after tie text.</td></tr>
+          <tr><td><b>Wilcoxon value in saved hybrid run</b></td><td colspan="3">approximately 0.157</td><td>Not significant evidence with only three cases.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section class="doc-section" data-title="Relevant documentation map">
+      <div class="eyebrow">Documentation evidence</div>
+      <h2>Where each technical claim in this report is documented</h2>
+      <div class="table-wrap">
+      <table>
+        <caption>Table: Repository evidence map for report claims</caption>
+        <thead><tr><th>Repository document or sheet</th><th>Relevant section</th><th>Use in presentation</th></tr></thead>
+        <tbody>
+          <tr><td><b><a href="experiments.md">docs/experiments.md</a></b></td><td>Sections 2–6</td><td>Bug preparation, cosine audit, file ranking, false exclusion, statement ranking and hybrid limits.</td></tr>
+          <tr><td><b><a href="REPORT.md">docs/REPORT.md</a></b></td><td>Pipeline, metrics and figures</td><td>Full illustrated narrative and explanation of formulas and example line ranks.</td></tr>
+          <tr><td><b><a href="reproduction.md">docs/reproduction.md</a></b></td><td>Setup and run decisions</td><td>Explain environment, commits, test scopes and reproducibility assumptions.</td></tr>
+          <tr><td><b><a href="architecture.md">docs/architecture.md</a></b></td><td>Current code structure</td><td>Map files to IR, spectrum, ranking, metrics and experiment engine stages.</td></tr>
+          <tr><td><b><a href="../results/experiments/statement_level_summary.csv">Statement summary CSV</a></b></td><td>All ISBL and hybrid rows</td><td>Source of TOP@N, MRR, MAP, nDCG, EXAM and W/D/L values.</td></tr>
+          <tr><td><b><a href="../results/experiments/file_level_summary.csv">File summary CSV</a></b></td><td>One row per IR configuration</td><td>Source of 108-file rank, Top@N and recall values.</td></tr>
+          <tr><td><b><a href="../results/experiments/false_exclusion.csv">False exclusion CSV</a></b></td><td>IR × cutoff rows</td><td>Source of lost bug count and statement-cut percentages.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section class="doc-section" data-title="Interpretation and limitations">
+      <div class="eyebrow">12 — Critical interpretation</div>
+      <h2>What is supported, and what is not supported</h2>
+      <div class="grid-2">
+        <div class="box green">
+          <h3>Supported conclusions</h3>
+          <ul>
+            <li>The code runs end to end for three Lang bugs on JDK 8 and JaCoCo.</li>
+            <li>Weighted file retrieval ranks all three buggy files first in the 23-model grid's strongest configurations.</li>
+            <li>Better retrieval prevents false exclusion at 10% for the tested weighted models.</li>
+            <li>Statement text narrows the exact-tie ranks for Lang-1 and Lang-3.</li>
+            <li>The results and intermediate artifacts are reproducible from the repository.</li>
+          </ul>
+        </div>
+        <div class="box red">
+          <h3>Unsupported claims</h3>
+          <ul>
+            <li>General superiority over the original 373-bug paper.</li>
+            <li>Statistical significance with n=3 bugs.</li>
+            <li>Generalization across all six Defects4J projects.</li>
+            <li>That the first-ranked line caused the defect.</li>
+          </ul>
+        </div>
+      </div>
+      <h3>Known implementation assumptions</h3>
+      <ul>
+        <li>JaCoCo executable source lines act as statements; one source line may contain several statements.</li>
+        <li>DStar uses exponent 2 in the main comparison and exponent 3 in DStar3.</li>
+        <li>Only the Defects4J trigger test is failing in the relevant-test baseline.</li>
+        <li>Missing-line answer keys use the first existing buggy-side line after the gap.</li>
+        <li>The rVSM implementation includes text similarity but not BugLocator's similar-bug-history component.</li>
+        <li>BLUiR-style extraction uses regular expressions, not a complete Java parser.</li>
+        <li>The hybrid parameters and the selected tie mode were fixed on the same three-bug sample, so they are exploratory.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" data-title="Presentation script and conclusion">
+      <div class="eyebrow">13 — Presenter conclusion</div>
+      <h2>Close with two findings and one honest limitation</h2>
+      <ol>
+        <li><b>Retrieval finding:</b> at 10%, raw TF loses Lang-2 and Lang-3, while sublinear TF-IDF keeps all three buggy files and removes about 46% of the 981/208/979-line spectra on average.</li>
+        <li><b>Ranking finding:</b> exact-tie statement text improves average ranks from <code>3.5/3/3.5</code> to <code>2/3/2</code>. Worst-tie MRR rises from 0.206 to 0.417, but the result comes from three bugs and was not tuned in a held-out experiment.</li>
+      </ol>
+      <div class="box blue">
+        <p><b>Recommended viva sentence:</b> “The project does not prove that a bug localization score identifies causality. It demonstrates that better file text retrieval reduces false exclusion and that statement text can reduce the uncertainty left by coverage ties.”</p>
+      </div>
+      <h3>Next validation</h3>
+      <p>Use a larger held-out Defects4J set across more projects, fix preprocessing and hybrid parameters before seeing labels, retain the answer-key files strictly for evaluation, and report paired confidence intervals and effect sizes with more than three bugs.</p>
+      <p><a href="../README.md">README</a> · <a href="reproduction.md">Reproduction guide</a> · <a href="baseline.md">Baseline notes</a> · <a href="literature.md">Literature scan</a></p>
+    </section>
+
+  </div></main>
+</div>
+<div class="image-modal" id="imageModal" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button type="button" id="closeImageModal" aria-label="Close enlarged image">×</button>
+  <img id="modalImage" alt="">
+</div>
+<script>
+  const sections=[...document.querySelectorAll(".doc-section")];
+  const nav=document.getElementById("topics");
+  const main=document.querySelector("main");
+  sections.forEach((section,i)=>{
+    section.id=`section-${i+1}`;
+    const button=document.createElement("button");
+    button.innerHTML=`<span class="num">${i+1}</span><span>${section.dataset.title}</span>`;
+    button.addEventListener("click",()=>section.scrollIntoView({behavior:"smooth",block:"start"}));
+    nav.appendChild(button);
+  });
+  const observer=new IntersectionObserver(entries=>{
+    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(!visible)return;
+    const i=sections.indexOf(visible.target);
+    [...nav.children].forEach((b,j)=>b.classList.toggle("active",j===i));
+  },{root:main,rootMargin:"-8% 0px -65% 0px",threshold:[.05,.2,.5]});
+  sections.forEach(s=>observer.observe(s));
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Home")sections[0].scrollIntoView({behavior:"smooth"});
+    if(e.key==="End")sections.at(-1).scrollIntoView({behavior:"smooth"});
+    if(e.key==="Escape")closeImageModal();
+  });
+  const imageModal=document.getElementById("imageModal");
+  const modalImage=document.getElementById("modalImage");
+  function closeImageModal(){imageModal.classList.remove("open");modalImage.src="";modalImage.alt=""}
+  document.querySelectorAll(".zoomable").forEach(image=>{
+    image.addEventListener("click",()=>{
+      modalImage.src=image.src;
+      modalImage.alt=image.alt;
+      imageModal.classList.add("open");
+      document.getElementById("closeImageModal").focus();
+    });
+  });
+  document.getElementById("closeImageModal").addEventListener("click",closeImageModal);
+  modalImage.addEventListener("click",closeImageModal);
+  imageModal.addEventListener("click",event=>{if(event.target===imageModal)closeImageModal()});
+</script>
+</body>
+</html>
